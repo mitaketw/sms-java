@@ -8,9 +8,6 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by kewang on 2016/5/31.
- */
 public class Sms {
     private static final Logger LOG = LoggerFactory.getLogger(Sms.class);
 

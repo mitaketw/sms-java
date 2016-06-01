@@ -4,7 +4,7 @@
 
     <groupId>com.mitake.sms</groupId>
     <artifactId>sms-lib</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0</version>
     <packaging>jar</packaging>
 
     <name>sms-lib</name>

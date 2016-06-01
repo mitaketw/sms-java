@@ -3,9 +3,6 @@ package com.mitake.sms;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/**
- * Created by kewang on 2016/5/31.
- */
 public class SmsResult {
     /**
      * 簡訊序號。為SmGateway所編定的簡訊序號。發送後進行查詢或狀態回報，均以此作為Key值。若該筆簡訊發送失敗，則不會有此欄位。
