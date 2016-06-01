@@ -95,7 +95,6 @@ public class SmsResult {
         Matcher matcher = pattern.matcher(response);
 
         while (matcher.find()) {
-
             String status = getStatus(matcher.group(3));
 
             result.add(new SmsResponse().setMsgId(matcher.group(2)).setStatus(status));

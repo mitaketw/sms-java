@@ -1,5 +1,6 @@
 package com.mitake.sms;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,7 +103,7 @@ public class Sms {
                 message = URLEncoder.encode(message, encoding);
                 message = message.replace("+", "%20");
             } catch (Exception e) {
-                LOG.error(Constants.EXCEPTION_PREFIX, e);
+                LOG.error(e.getMessage());
             }
 
             map.put(KEY_MESSAGE, message);
@@ -354,9 +355,7 @@ public class Sms {
     }
 
     private class Check {
-
         boolean isSuccess;
         String errorMsg;
-
     }
 }

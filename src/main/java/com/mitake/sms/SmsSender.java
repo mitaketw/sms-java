@@ -1,15 +1,18 @@
 package com.mitake.sms;
 
+import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.URL;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 public class SmsSender {
     private static final Logger LOG = LoggerFactory.getLogger(SmsSender.class);
-    private static final String URL = "http://smexpress.mitake.com.tw/SmSendGet.asp?";
+    private static final String DEFAULT_URL = "http://smexpress.mitake.com.tw/SmSendGet.asp";
 
     /* Result key value pair index */
     private static final int PAIR_KEY_INDEX = 0;
@@ -23,62 +26,48 @@ public class SmsSender {
 
     public SmsResult send(Sms sms) {
         String query = sms.buildQuery();
-        StringBuffer response = new StringBuffer();
-        HttpURLConnection con = null;
+        StringBuffer res = new StringBuffer();
+        HttpURLConnection conn = null;
         InputStream is = null;
 
         try {
-            URL obj = new URL(URL + query);
+            URL url = new URL(DEFAULT_URL + query);
 
-            con = (HttpURLConnection) obj.openConnection();
+            conn = (HttpURLConnection) url.openConnection();
 
             // optional default is GET
-            con.setRequestMethod("GET");
+            conn.setRequestMethod("GET");
 
-            is = con.getInputStream();
+            is = conn.getInputStream();
 
-            ArrayList<String> lines = (ArrayList<String>) IOUtils.readLines(is);
+            ArrayList<String> lines = (ArrayList<String>) IOUtils.readLines(is, Charset.defaultCharset());
 
             for (String line : lines) {
-                response.append(line).append(",");
+                res.append(line).append(",");
             }
 
-            LOG.debug("===== SmsResult ===== : " + response);
+            LOG.debug("===== SmsResult ===== : " + res);
         } catch (Exception e) {
-            LOG.error(Constants.EXCEPTION_PREFIX, e);
+            LOG.error(e.getMessage());
         } finally {
             try {
                 if (is != null) {
                     is.close();
                 }
 
-                if (con != null) {
-                    con.disconnect();
+                if (conn != null) {
+                    conn.disconnect();
                 }
-            } catch (IOException e) {
-                LOG.error(Constants.EXCEPTION_PREFIX, e);
+            } catch (Exception e) {
+                LOG.error(e.getMessage());
             }
         }
 
         // print result
-        return parserResult(response.toString());
+        return parseResponse(res.toString());
     }
 
-    public SmsResult parserResult(String data) {
-        SmsResult result = new SmsResult();
-
-        result.addAllSmsResponse(result.createSmsResponses(data));
-        result.setStatusCode(SmsResult.STATUS_CODE_OK);
-        result.setSender(SmsDriver.MITAKE.toString());
-
-        for (CHTSmsResult.SmsResponse smsResponse : result.getSmsResponses()) {
-            if (!smsResponse.getStatus().equals(
-                    SmsResult.SmsStatus.Success.getKey())) {
-                result.setStatusCode(SmsResult.SmsStatus.Fail.getKey());
-                break;
-            }
-        }
-
-        return result;
+    private SmsResult parseResponse(String result) {
+        return null;
     }
 }
