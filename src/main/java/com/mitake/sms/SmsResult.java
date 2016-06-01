@@ -1,9 +1,10 @@
 package com.mitake.sms;
 
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SmsResult {
+    private static final String STATUS_CODE_OK = "1";
+
     /**
      * 簡訊序號。為SmGateway所編定的簡訊序號。發送後進行查詢或狀態回報，均以此作為Key值。若該筆簡訊發送失敗，則不會有此欄位。
      */
@@ -42,10 +43,6 @@ public class SmsResult {
      * </ul>
      */
 
-    public SmsResult() {
-        STATUS_CODE_OK = "1";
-    }
-
     /**
      * 剩餘點數。本次發送後的剩餘額度。
      */
@@ -83,20 +80,5 @@ public class SmsResult {
     public SmsResult setIsDuplicate(String isDuplicate) {
         this.isDuplicate = isDuplicate;
         return this;
-    }
-
-    @Override
-    public List<SmsResponse> createSmsResponses(String response) {
-        List<SmsResponse> result = new ArrayList<SmsResponse>();
-
-        Matcher matcher = pattern.matcher(response);
-
-        while (matcher.find()) {
-            String status = getStatus(matcher.group(3));
-
-            result.add(new SmsResponse().setMsgId(matcher.group(2)).setStatus(status));
-        }
-
-        return result;
     }
 }
