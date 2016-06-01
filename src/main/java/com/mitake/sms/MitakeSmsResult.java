@@ -2,7 +2,7 @@ package com.mitake.sms;
 
 import java.util.regex.Pattern;
 
-public class SmsResult {
+public class MitakeSmsResult {
     private static final String STATUS_CODE_OK = "1";
 
     /**
@@ -67,17 +67,17 @@ public class SmsResult {
         return isDuplicate;
     }
 
-    public SmsResult setMsgId(String msgId) {
+    public MitakeSmsResult setMsgId(String msgId) {
         this.msgId = msgId;
         return this;
     }
 
-    public SmsResult setOverage(String overage) {
+    public MitakeSmsResult setOverage(String overage) {
         this.overage = overage;
         return this;
     }
 
-    public SmsResult setIsDuplicate(String isDuplicate) {
+    public MitakeSmsResult setIsDuplicate(String isDuplicate) {
         this.isDuplicate = isDuplicate;
         return this;
     }

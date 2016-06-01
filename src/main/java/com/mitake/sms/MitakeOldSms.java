@@ -8,8 +8,8 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Sms {
-    private static final Logger LOG = LoggerFactory.getLogger(Sms.class);
+public class MitakeOldSms {
+    private static final Logger LOG = LoggerFactory.getLogger(MitakeOldSms.class);
 
     /* Query */
     private static final String QUERY_AMPERSAND = "&";
@@ -35,7 +35,7 @@ public class Sms {
     /**
      * Create buildMap method.
      */
-    public Sms() {
+    public MitakeOldSms() {
         map = new HashMap<String, String>();
 
         // Set default
@@ -52,7 +52,7 @@ public class Sms {
      * @param userName sender user id
      * @return builder
      */
-    public Sms setUserName(String userName) throws IllegalArgumentException {
+    public MitakeOldSms setUserName(String userName) throws IllegalArgumentException {
         if (checkValueLength(userName, 20)) {
             map.put(KEY_USER_NAME, userName);
         } else {
@@ -68,7 +68,7 @@ public class Sms {
      * @param password sender user password
      * @return builder
      */
-    public Sms setPassword(String password) throws IllegalArgumentException {
+    public MitakeOldSms setPassword(String password) throws IllegalArgumentException {
         if (checkValueLength(password, 24)) {
             map.put(KEY_CODE, password);
         } else {
@@ -92,7 +92,7 @@ public class Sms {
      * @param message message body
      * @return builder
      */
-    public Sms setMessage(String message) throws IllegalArgumentException {
+    public MitakeOldSms setMessage(String message) throws IllegalArgumentException {
         if (checkValueLength(message, 256)) {
             String encoding = map.get(KEY_ENCODING);
 
@@ -121,7 +121,7 @@ public class Sms {
      * @param number destination number
      * @return builder
      */
-    public Sms setDestNumber(String number) throws IllegalArgumentException {
+    public MitakeOldSms setDestNumber(String number) throws IllegalArgumentException {
         //if (checkValueLength(number, 20)) {
         map.put(KEY_DEST_NUMBER, number);
         //} else {
@@ -141,7 +141,7 @@ public class Sms {
      * @param name destination name
      * @return builder
      */
-    public Sms setDestName(String name) throws IllegalArgumentException {
+    public MitakeOldSms setDestName(String name) throws IllegalArgumentException {
         if (checkValueLength(name, 36)) {
             map.put(KEY_DEST_NAME, name);
         } else {
@@ -176,7 +176,7 @@ public class Sms {
      * @param encoding
      * @return builder
      */
-    public Sms setEncoding(String encoding) throws IllegalArgumentException {
+    public MitakeOldSms setEncoding(String encoding) throws IllegalArgumentException {
         if (checkValueLength(encoding, 10)) {
             map.put(KEY_ENCODING, encoding);
         } else {
@@ -199,7 +199,7 @@ public class Sms {
      * @param time
      * @return builder
      */
-    public Sms setSchedule(String time) throws IllegalArgumentException {
+    public MitakeOldSms setSchedule(String time) throws IllegalArgumentException {
         if (checkValueLength(time, 10)) {
             map.put(KEY_SCHEDULE, time);
         } else {
@@ -221,7 +221,7 @@ public class Sms {
      * @param time
      * @return builder
      */
-    public Sms setTimeToLive(String time) throws IllegalArgumentException {
+    public MitakeOldSms setTimeToLive(String time) throws IllegalArgumentException {
         if (checkValueLength(time, 14)) {
             map.put(KEY_TIME_TO_LIVE, time);
         } else {
@@ -240,7 +240,7 @@ public class Sms {
      *
      * @return builder
      */
-    public Sms setResponseURL(String url) throws IllegalArgumentException {
+    public MitakeOldSms setResponseURL(String url) throws IllegalArgumentException {
         if (checkValueLength(url, 256)) {
             map.put(KEY_RESPONSE, url);
         } else {
@@ -264,7 +264,7 @@ public class Sms {
      *
      * @return builder
      */
-    public Sms setClientID(String id) {
+    public MitakeOldSms setClientID(String id) {
         if (checkValueLength(id, 256)) {
             map.put(KEY_CLIENT_ID, id);
         } else {
