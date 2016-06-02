@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -79,7 +80,8 @@ public class MitakeSmsSender {
         maps.put(KEY_USERNAME, MitakeSms.getUsername());
         maps.put(KEY_PASSWORD, MitakeSms.getPassword());
         maps.put(KEY_DESTINATION, to);
-        maps.put(KEY_MESSAGE, message);
+        maps.put(KEY_ENCODING, "UTF8");
+        maps.put(KEY_MESSAGE, encode(message, maps.get(KEY_ENCODING)));
 
         StringBuffer sb = new StringBuffer();
 
@@ -90,5 +92,13 @@ public class MitakeSmsSender {
         URL url = new URL(DEFAULT_URL + "?" + StringUtils.removeEnd(sb.toString(), "&"));
 
         return url;
+    }
+
+    private String encode(String message, String encoding) throws Exception {
+        message = URLEncoder.encode(message, encoding);
+
+        message = message.replace("+", "%20");
+
+        return message;
     }
 }

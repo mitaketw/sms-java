@@ -30,7 +30,7 @@ public class SmsTest extends TestCase {
     public void testApp() {
         MitakeSms.init(System.getenv("MITAKE_SMS_USERNAME"), System.getenv("MITAKE_SMS_PASSWORD"));
 
-        MitakeSmsResult result = MitakeSms.send(System.getenv("MITAKE_SMS_TO"), "test message");
+        MitakeSmsResult result = MitakeSms.send(System.getenv("MITAKE_SMS_TO"), "this 簡訊 & 內容 message 1 + 2 羣");
 
         assertNotNull(result);
     }
