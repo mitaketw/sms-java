@@ -50,13 +50,13 @@ public class MitakeSmsSender {
 
             ArrayList<String> lines = (ArrayList<String>) IOUtils.readLines(is, Charset.defaultCharset());
 
-            StringBuffer res = new StringBuffer();
+            MitakeSmsResult result = parseResponse(lines);
 
-            for (String line : lines) {
-                res.append(line).append(",");
-            }
+            return result;
         } catch (Exception e) {
             LOG.error(e.getMessage());
+
+            return null;
         } finally {
             try {
                 if (is != null) {
@@ -70,22 +70,26 @@ public class MitakeSmsSender {
                 LOG.error(e.getMessage());
             }
         }
+    }
+
+    private MitakeSmsResult parseResponse(ArrayList<String> lines) {
+        MitakeSmsResult result = new MitakeSmsResult(lines);
 
         return null;
     }
 
     private URL buildUrl(String to, String message) throws Exception {
-        HashMap<String, String> maps = new HashMap<String, String>();
+        HashMap<String, String> map = new HashMap<String, String>();
 
-        maps.put(KEY_USERNAME, MitakeSms.getUsername());
-        maps.put(KEY_PASSWORD, MitakeSms.getPassword());
-        maps.put(KEY_DESTINATION, to);
-        maps.put(KEY_ENCODING, "UTF8");
-        maps.put(KEY_MESSAGE, encode(message, maps.get(KEY_ENCODING)));
+        map.put(KEY_USERNAME, MitakeSms.getUsername());
+        map.put(KEY_PASSWORD, MitakeSms.getPassword());
+        map.put(KEY_DESTINATION, to);
+        map.put(KEY_ENCODING, "UTF8");
+        map.put(KEY_MESSAGE, encode(message, map.get(KEY_ENCODING)));
 
         StringBuffer sb = new StringBuffer();
 
-        for (Map.Entry<String, String> entry : maps.entrySet()) {
+        for (Map.Entry<String, String> entry : map.entrySet()) {
             sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
 

@@ -1,9 +1,18 @@
 package com.mitake.sms;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MitakeSmsResult {
+    private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsSender.class);
     private static final String STATUS_CODE_OK = "1";
+
+    private HashMap<String, String> resultMap = new HashMap<String, String>();
 
     /**
      * 簡訊序號。為SmGateway所編定的簡訊序號。發送後進行查詢或狀態回報，均以此作為Key值。若該筆簡訊發送失敗，則不會有此欄位。
@@ -54,6 +63,23 @@ public class MitakeSmsResult {
     private String isDuplicate;
 
     private final static Pattern pattern = Pattern.compile("\\[([0-9+]+)\\],msgid=([0-9a-zA-Z]+),statuscode=([0-9a-zA-Z]+)");
+    private final static Pattern PATTERN = Pattern.compile("\\[(\\d+)\\]");
+
+    public MitakeSmsResult(ArrayList<String> lines) {
+        parseResponse(lines);
+    }
+
+    private void parseResponse(ArrayList<String> lines) {
+        for (String line : lines) {
+            Matcher matcher = PATTERN.matcher(line);
+
+            if (matcher.find()) {
+                LOG.debug(matcher.group(1));
+            } else {
+                LOG.debug(line);
+            }
+        }
+    }
 
     public String getMsgId() {
         return msgId;
