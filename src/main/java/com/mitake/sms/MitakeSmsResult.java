@@ -10,68 +10,70 @@ import java.util.regex.Pattern;
 
 public class MitakeSmsResult {
     private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsSender.class);
-    private final static Pattern PATTERN = Pattern.compile("\\[(\\d+)\\]");
+    private static final Pattern PATTERN = Pattern.compile("(\\[(\\d+)\\]\\r\\n(\\w+)=(\\w+)\\r\\n(\\w+)=(\\w+))+\\r\\n(AccountPoint=(\\d+))?");
 
-    private HashMap<String, String> resultMap = new HashMap<String, String>();
+    private ArrayList<SmsResult> results;
 
-    /**
-     * 簡訊序號。為SmGateway所編定的簡訊序號。發送後進行查詢或狀態回報，均以此作為Key值。若該筆簡訊發送失敗，則不會有此欄位。
-     */
-    private String msgId;
+    private int accountPoint;
 
-
-
-    /**
-     * 剩餘點數。本次發送後的剩餘額度。
-     */
-    private String overage;
-
-    /**
-     * 是否為重複發送的簡訊。Y代表重複發送，其他值或無此欄位代表非重複發送。
-     */
-    private String isDuplicate;
-
-
-    public MitakeSmsResult(ArrayList<String> lines) {
-        parseResponse(lines);
+    public MitakeSmsResult(String response, String to) {
+        parseResult(response, to);
     }
 
-    private void parseResponse(ArrayList<String> lines) {
-        for (String line : lines) {
-            Matcher matcher = PATTERN.matcher(line);
+    private void parseResult(String response, String to) {
+        results = new ArrayList<SmsResult>();
 
-            if (matcher.find()) {
-                LOG.debug(matcher.group(1));
+        Matcher matcher = PATTERN.matcher(response);
+
+        while (matcher.find()) {
+            SmsResult result = new SmsResult();
+
+            String group2Value = matcher.group(2);
+            String group3Value = matcher.group(3);
+            String group4Value = matcher.group(4);
+            String group5Value = matcher.group(5);
+            String group6Value = matcher.group(6);
+            String group7Value = matcher.group(7);
+            String group8Value = matcher.group(8);
+
+            if (group2Value.length() != 10) {
+                result.phoneNumber = to;
             } else {
-                LOG.debug(line);
+                result.phoneNumber = group2Value;
+            }
+
+            if (group3Value.equals("msgid")) {
+                result.messageId = group4Value;
+            }
+
+            if (group5Value.equals("statuscode")) {
+                result.statusCode = StatusCode.findByKey(group6Value);
+            }
+
+            results.add(result);
+
+            if (group7Value != null && group8Value != null) {
+                accountPoint = Integer.valueOf(group8Value);
             }
         }
     }
 
-    public String getMsgId() {
-        return msgId;
+    public ArrayList<SmsResult> getResults() {
+        return results;
     }
 
-    public String getOverage() {
-        return overage;
+    public int getAccountPoint() {
+        return accountPoint;
     }
 
-    public String getIsDuplicate() {
-        return isDuplicate;
-    }
+    public class SmsResult {
+        private String phoneNumber;
+        private String messageId;
+        private StatusCode statusCode;
 
-    public MitakeSmsResult setMsgId(String msgId) {
-        this.msgId = msgId;
-        return this;
-    }
-
-    public MitakeSmsResult setOverage(String overage) {
-        this.overage = overage;
-        return this;
-    }
-
-    public MitakeSmsResult setIsDuplicate(String isDuplicate) {
-        this.isDuplicate = isDuplicate;
-        return this;
+        @Override
+        public String toString() {
+            return "phoneNumber: " + phoneNumber + ", messageId: " + messageId + ", statusCode: " + statusCode.getMessage();
+        }
     }
 }

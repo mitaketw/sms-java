@@ -32,6 +32,14 @@ public enum StatusCode {
     private String code;
     private String message;
 
+    public String getCode() {
+        return code;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
     StatusCode(String code, String message) {
         this.code = code;
         this.message = message;

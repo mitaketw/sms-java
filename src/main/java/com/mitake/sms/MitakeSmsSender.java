@@ -48,11 +48,9 @@ public class MitakeSmsSender {
 
             is = conn.getInputStream();
 
-            ArrayList<String> lines = (ArrayList<String>) IOUtils.readLines(is, Charset.defaultCharset());
+            String response = IOUtils.toString(is, Charset.defaultCharset());
 
-            MitakeSmsResult result = parseResponse(lines);
-
-            return result;
+            return parseResult(response, to);
         } catch (Exception e) {
             LOG.error(e.getMessage());
 
@@ -72,10 +70,8 @@ public class MitakeSmsSender {
         }
     }
 
-    private MitakeSmsResult parseResponse(ArrayList<String> lines) {
-        MitakeSmsResult result = new MitakeSmsResult(lines);
-
-        return null;
+    private MitakeSmsResult parseResult(String response, String to) {
+        return new MitakeSmsResult(response, to);
     }
 
     private URL buildUrl(String to, String message) throws Exception {
