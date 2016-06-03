@@ -32,11 +32,7 @@ public class SmsTest extends TestCase {
 
         MitakeSmsResult result = MitakeSms.send(System.getenv("MITAKE_SMS_TO"), "this 簡訊 & 內容 message 1 + 2 羣");
 
-        for (MitakeSmsResult.SmsResult res : result.getResults()) {
-            System.out.println("result: " + res.toString());
-        }
-
-        System.out.println("accountPoint: " + result.getAccountPoint());
+        System.out.println("result: " + result.toString());
 
         assertNotNull(result);
     }

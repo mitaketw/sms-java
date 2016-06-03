@@ -76,4 +76,17 @@ public class MitakeSmsResult {
             return "phoneNumber: " + phoneNumber + ", messageId: " + messageId + ", statusCode: " + statusCode.getMessage();
         }
     }
+
+    @Override
+    public String toString() {
+        StringBuffer sb = new StringBuffer();
+
+        for (SmsResult result : results) {
+            sb.append(result.toString()).append("\n");
+        }
+
+        sb.append("accountPoint: ").append(accountPoint);
+
+        return sb.toString();
+    }
 }
