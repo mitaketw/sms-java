@@ -1,5 +1,6 @@
 package com.mitake.sms;
 
+import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -48,7 +49,9 @@ public class MitakeSmsSender {
 
             is = conn.getInputStream();
 
-            String response = IOUtils.toString(is, Charset.defaultCharset());
+            String response = IOUtils.toString(is, "big5");
+
+            LOG.debug("response: {}", response);
 
             return parseResult(response, to);
         } catch (Exception e) {
