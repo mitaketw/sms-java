@@ -49,7 +49,7 @@ public class MitakeSmsSender {
 
             is = conn.getInputStream();
 
-            String response = IOUtils.toString(is, "big5");
+            ArrayList<String> response = (ArrayList<String>) IOUtils.readLines(is, "big5");
 
             LOG.debug("response: {}", response);
 
@@ -73,7 +73,7 @@ public class MitakeSmsSender {
         }
     }
 
-    private MitakeSmsResult parseResult(String response, String to) {
+    private MitakeSmsResult parseResult(ArrayList<String> response, String to) {
         return new MitakeSmsResult(response, to);
     }
 

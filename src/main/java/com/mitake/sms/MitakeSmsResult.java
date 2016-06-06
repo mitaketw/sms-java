@@ -4,56 +4,62 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MitakeSmsResult {
     private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsSender.class);
-    private static final Pattern PATTERN = Pattern.compile("(\\[(\\d+)\\]\\r\\n(\\w+)=(\\w+)\\r\\n(\\w+)=(\\w+))+\\r\\n(AccountPoint=(\\d+))?");
+    private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("\\[(\\d+)\\]");
+    private static final Pattern FIELD_PATTERN = Pattern.compile("(\\w+)=([\\w\\p{InCJKUnifiedIdeographs}]+)");
+    private static final Pattern ACCOUNT_POINT_PATTERN = Pattern.compile("AccountPoint=(\\d+)");
 
     private ArrayList<SmsResult> results;
 
     private int accountPoint;
 
-    public MitakeSmsResult(String response, String to) {
+    public MitakeSmsResult(ArrayList<String> response, String to) {
         parseResult(response, to);
     }
 
-    private void parseResult(String response, String to) {
+    private void parseResult(ArrayList<String> response, String to) {
         results = new ArrayList<SmsResult>();
 
-        Matcher matcher = PATTERN.matcher(response);
+        SmsResult result = null;
 
-        while (matcher.find()) {
-            SmsResult result = new SmsResult();
+        for (String line : response) {
+            Matcher phoneNumberMatcher = PHONE_NUMBER_PATTERN.matcher(line);
 
-            String group2Value = matcher.group(2);
-            String group3Value = matcher.group(3);
-            String group4Value = matcher.group(4);
-            String group5Value = matcher.group(5);
-            String group6Value = matcher.group(6);
-            String group7Value = matcher.group(7);
-            String group8Value = matcher.group(8);
+            if (phoneNumberMatcher.find()) {
+                result = new SmsResult();
 
-            if (group2Value.length() != 10) {
-                result.phoneNumber = to;
-            } else {
-                result.phoneNumber = group2Value;
+                results.add(result);
+
+                if (phoneNumberMatcher.group(1).length() != 10) {
+                    result.phoneNumber = to;
+                } else {
+                    result.phoneNumber = phoneNumberMatcher.group(1);
+                }
             }
 
-            if (group3Value.equals("msgid")) {
-                result.messageId = group4Value;
+            Matcher fieldMatcher = FIELD_PATTERN.matcher(line);
+
+            if (fieldMatcher.find()) {
+                String group1Value = fieldMatcher.group(1);
+                String group2Value = fieldMatcher.group(2);
+
+                if (group1Value.equals("msgid")) {
+                    result.messageId = group2Value;
+                }
+
+                if (group1Value.equals("statuscode")) {
+                    result.statusCode = StatusCode.findByKey(group2Value);
+                }
             }
 
-            if (group5Value.equals("statuscode")) {
-                result.statusCode = StatusCode.findByKey(group6Value);
-            }
+            Matcher accountPointMatcher = ACCOUNT_POINT_PATTERN.matcher(line);
 
-            results.add(result);
-
-            if (group7Value != null && group8Value != null) {
-                accountPoint = Integer.valueOf(group8Value);
+            if (accountPointMatcher.find()) {
+                accountPoint = Integer.valueOf(accountPointMatcher.group(1));
             }
         }
     }
