@@ -1,7 +1,0 @@
-21:35:33.672 [main] INFO com.mitake.sms.MitakeSmsSender - [0912345678]
-21:35:33.683 [main] INFO com.mitake.sms.MitakeSmsSender - msgid=1490732632
-21:35:33.683 [main] INFO com.mitake.sms.MitakeSmsSender - statuscode=1
-21:35:33.683 [main] INFO com.mitake.sms.MitakeSmsSender - [0987654321]
-21:35:33.683 [main] INFO com.mitake.sms.MitakeSmsSender - msgid=1490732633
-21:35:33.683 [main] INFO com.mitake.sms.MitakeSmsSender - statuscode=1
-21:35:33.683 [main] INFO com.mitake.sms.MitakeSmsSender - AccountPoint=4980

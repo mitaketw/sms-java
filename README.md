@@ -1,6 +1,12 @@
 # sms-java
 
-三竹資訊 Mitake 簡訊串接 Library for Java
+Mitake SMS library for Java
+
+## Dependency
+
+### Maven
+
+TODO
 
 ## How to use
 
@@ -15,3 +21,7 @@ MitakeSms.init("username", "password");
 ```java
 MitakeSmsResult result = MitakeSms.send("0912345678", "this is a sample message");
 ```
+
+## Official Document
+
+TODO
