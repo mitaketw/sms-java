@@ -6,14 +6,19 @@ public class MitakeSms {
     private static String username;
     private static String password;
     private static MitakeSmsSender sender;
+    private static boolean init;
 
     public static void init(String username, String password) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+            init = false;
+
             throw new IllegalArgumentException("Please press username and password");
         }
 
         MitakeSms.username = username;
         MitakeSms.password = password;
+
+        init = true;
     }
 
     public static String getUsername() {
@@ -25,6 +30,10 @@ public class MitakeSms {
     }
 
     public static MitakeSmsResult send(String to, String message) {
+        if (!init) {
+            throw new RuntimeException("Init first");
+        }
+
         if (sender == null) {
             sender = new MitakeSmsSender();
         }
