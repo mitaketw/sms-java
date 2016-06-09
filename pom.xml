@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>mitake</groupId>
-    <artifactId>sms-lib</artifactId>
+    <artifactId>lib-sms</artifactId>
     <version>0.1.0</version>
     <packaging>jar</packaging>
 
-    <name>sms-lib</name>
+    <name>lib-sms</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -37,4 +37,12 @@
             <version>3.4</version>
         </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>bintray-repo-maven</id>
+            <name>kewang-maven</name>
+            <url>https://api.bintray.com/maven/kewang/maven/mitake-lib-sms/;publish=1</url>
+        </repository>
+    </distributionManagement>
 </project>
