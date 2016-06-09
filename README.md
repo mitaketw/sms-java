@@ -6,7 +6,19 @@ Mitake SMS library for Java
 
 ### Maven
 
-TODO
+```xml
+<dependency>
+  <groupId>mitake</groupId>
+  <artifactId>lib-sms</artifactId>
+  <version>0.1.0</version>
+</dependency>
+```
+
+### Gradle
+
+```groovy
+compile 'mitake:lib-sms:0.1.0'
+```
 
 ## How to use
 
