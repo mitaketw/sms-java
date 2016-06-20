@@ -1,5 +1,7 @@
 package com.mitake.sms;
 
+import com.mitake.sms.listener.OnPostSendListener;
+import com.mitake.sms.listener.OnPreSendListener;
 import org.apache.commons.lang3.StringUtils;
 
 public class MitakeSms {
@@ -33,6 +35,18 @@ public class MitakeSms {
     }
 
     public static MitakeSmsResult send(String to, String message) {
+        return send(to, message, null, null);
+    }
+
+    public static MitakeSmsResult send(String to, String message, OnPreSendListener listener) {
+        return send(to, message, listener, null);
+    }
+
+    public static MitakeSmsResult send(String to, String message, OnPostSendListener listener) {
+        return send(to, message, null, listener);
+    }
+
+    public static MitakeSmsResult send(String to, String message, OnPreSendListener preListener, OnPostSendListener postListener) {
         if (!init) {
             throw new RuntimeException("Init first");
         }
@@ -41,6 +55,16 @@ public class MitakeSms {
             sender = new MitakeSmsSender();
         }
 
-        return sender.send(to, message);
+        if (preListener != null) {
+            preListener.onPreSend();
+        }
+
+        MitakeSmsResult mitakeSmsResult = sender.send(to, message);
+
+        if (postListener != null) {
+            postListener.onPostSend();
+        }
+
+        return mitakeSmsResult;
     }
 }

@@ -1,5 +1,7 @@
 package com.mitake.sms;
 
+import com.mitake.sms.listener.OnPostSendListener;
+import com.mitake.sms.listener.OnPreSendListener;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,5 +20,23 @@ public class SmsTest {
         System.out.println("result: " + result.toString());
 
         assertNotNull(result);
+    }
+
+    @Test
+    public void testSmsOnPreSend() {
+        MitakeSms.send(System.getenv("MITAKE_SMS_TO"), "test", new OnPreSendListener() {
+            public void onPreSend() {
+                System.out.println("OnPreSend");
+            }
+        });
+    }
+
+    @Test
+    public void testSmsOnPostSend() {
+        MitakeSms.send(System.getenv("MITAKE_SMS_TO"), "test", new OnPostSendListener() {
+            public void onPostSend() {
+                System.out.println("OnPostSend");
+            }
+        });
     }
 }
