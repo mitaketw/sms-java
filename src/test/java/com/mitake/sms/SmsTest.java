@@ -24,7 +24,7 @@ public class SmsTest {
 
     @Test
     public void testSmsOnPreSend() {
-        MitakeSms.send(System.getenv("MITAKE_SMS_TO"), "test", new OnPreSendListener() {
+        MitakeSms.send(System.getenv("MITAKE_SMS_TO"), "OnPreSend message", new OnPreSendListener() {
             public void onPreSend() {
                 System.out.println("OnPreSend");
             }
@@ -33,7 +33,7 @@ public class SmsTest {
 
     @Test
     public void testSmsOnPostSend() {
-        MitakeSms.send(System.getenv("MITAKE_SMS_TO"), "test", new OnPostSendListener() {
+        MitakeSms.send(System.getenv("MITAKE_SMS_TO"), "OnPostSend message", new OnPostSendListener() {
             public void onPostSend() {
                 System.out.println("OnPostSend");
             }
