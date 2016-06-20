@@ -8,6 +8,9 @@ public class MitakeSms {
     private static MitakeSmsSender sender;
     private static boolean init;
 
+    private MitakeSms() {
+    }
+
     public static void init(String username, String password) {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             init = false;
