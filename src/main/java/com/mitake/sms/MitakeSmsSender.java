@@ -1,6 +1,5 @@
 package com.mitake.sms;
 
-import org.apache.commons.io.Charsets;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -10,7 +9,6 @@ import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -44,7 +42,7 @@ public class MitakeSmsSender {
             int responseCode = conn.getResponseCode();
 
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                return null;
+                return connectionError(ConnectionResult.FAIL);
             }
 
             is = conn.getInputStream();
@@ -57,7 +55,7 @@ public class MitakeSmsSender {
         } catch (Exception e) {
             LOG.error(e.getMessage());
 
-            return null;
+            return connectionError(ConnectionResult.EXCEPTION);
         } finally {
             try {
                 if (is != null) {
@@ -71,6 +69,10 @@ public class MitakeSmsSender {
                 LOG.error(e.getMessage());
             }
         }
+    }
+
+    private MitakeSmsResult connectionError(ConnectionResult connectionResult) {
+        return new MitakeSmsResult(connectionResult);
     }
 
     private MitakeSmsResult parseResult(ArrayList<String> response, String to) {

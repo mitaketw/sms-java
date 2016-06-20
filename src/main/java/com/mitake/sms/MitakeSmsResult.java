@@ -13,12 +13,18 @@ public class MitakeSmsResult {
     private static final Pattern FIELD_PATTERN = Pattern.compile("(\\w+)=([\\w\\p{InCJKUnifiedIdeographs}]+)");
     private static final Pattern ACCOUNT_POINT_PATTERN = Pattern.compile("AccountPoint=(\\d+)");
 
+    private ConnectionResult connectionResult;
     private ArrayList<SmsResult> results;
-
     private int accountPoint;
 
     public MitakeSmsResult(ArrayList<String> response, String to) {
         parseResult(response, to);
+
+        this.connectionResult = ConnectionResult.OK;
+    }
+
+    public MitakeSmsResult(ConnectionResult connectionResult) {
+        this.connectionResult = connectionResult;
     }
 
     private void parseResult(ArrayList<String> response, String to) {
@@ -72,6 +78,10 @@ public class MitakeSmsResult {
         return accountPoint;
     }
 
+    public ConnectionResult getConnectionResult() {
+        return connectionResult;
+    }
+
     public class SmsResult {
         private String phoneNumber;
         private String messageId;
@@ -85,7 +95,7 @@ public class MitakeSmsResult {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer();
+        StringBuffer sb = new StringBuffer("ConnectionResult: " + connectionResult.toString() + "\n");
 
         for (SmsResult result : results) {
             sb.append(result.toString()).append("\n");
