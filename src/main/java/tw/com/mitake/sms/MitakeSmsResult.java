@@ -1,4 +1,4 @@
-package com.mitake.sms;
+package tw.com.mitake.sms;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

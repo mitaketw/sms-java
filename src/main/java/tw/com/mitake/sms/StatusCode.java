@@ -1,4 +1,4 @@
-package com.mitake.sms;
+package tw.com.mitake.sms;
 
 public enum StatusCode {
     CODE_STAR("*", "系統發生錯誤，請聯絡三竹資訊窗口人員"),

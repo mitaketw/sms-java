@@ -1,7 +1,7 @@
-package com.mitake.sms;
+package tw.com.mitake.sms;
 
-import com.mitake.sms.listener.OnPostSendListener;
-import com.mitake.sms.listener.OnPreSendListener;
+import tw.com.mitake.sms.listener.OnPostSendListener;
+import tw.com.mitake.sms.listener.OnPreSendListener;
 import org.apache.commons.lang3.StringUtils;
 
 public class MitakeSms {

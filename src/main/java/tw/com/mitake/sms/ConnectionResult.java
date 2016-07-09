@@ -1,4 +1,4 @@
-package com.mitake.sms;
+package tw.com.mitake.sms;
 
 public enum ConnectionResult {
     OK(1), FAIL(2), EXCEPTION(3);
