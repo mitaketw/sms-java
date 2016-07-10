@@ -2,6 +2,8 @@
 
 Mitake SMS library for Java
 
+**Removed versions 0.1.0 ~ 0.3.0, please update to 0.3.1+**
+
 ## Dependency
 
 ### Maven
