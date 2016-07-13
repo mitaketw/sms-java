@@ -1,5 +1,7 @@
 # sms-java
 
+[![Build Status](https://travis-ci.org/mitaketw/sms-java.svg?branch=master)](https://travis-ci.org/mitaketw/sms-java)
+
 Mitake SMS library for Java
 
 **Removed versions 0.1.0 ~ 0.3.0, please update to 0.3.1+**
