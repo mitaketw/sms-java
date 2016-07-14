@@ -4,7 +4,7 @@
 
 Mitake SMS library for Java
 
-**Removed versions 0.1.0 ~ 0.3.0, please update to 0.3.1+**
+**PLEASE UPDATE TO 0.4.0+**
 
 ## Dependency
 
@@ -12,16 +12,16 @@ Mitake SMS library for Java
 
 ```xml
 <dependency>
-  <groupId>mitake</groupId>
+  <groupId>tw.com.mitake</groupId>
   <artifactId>lib-sms</artifactId>
-  <version>0.3.2</version>
+  <version>0.4.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```groovy
-compile 'mitake:lib-sms:0.3.2'
+compile 'tw.com.mitake:lib-sms:0.4.0'
 ```
 
 ## How to use
