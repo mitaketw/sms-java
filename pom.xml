@@ -3,7 +3,7 @@
 
     <groupId>tw.com.mitake</groupId>
     <artifactId>lib-sms</artifactId>
-    <version>0.4.1</version>
+    <version>0.4.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>lib-sms</name>
@@ -28,7 +28,7 @@
         <connection>scm:git:git@github.com:mitaketw/sms-java.git</connection>
         <developerConnection>scm:git:git@github.com:mitaketw/sms-java.git</developerConnection>
         <url>scm:git:git@github.com:mitaketw/sms-java.git</url>
-      <tag>v0.4.1</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <properties>
