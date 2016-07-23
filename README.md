@@ -14,14 +14,14 @@ Mitake SMS library for Java
 <dependency>
   <groupId>tw.com.mitake</groupId>
   <artifactId>lib-sms</artifactId>
-  <version>0.4.1</version>
+  <version>0.4.2</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```groovy
-compile 'tw.com.mitake:lib-sms:0.4.1'
+compile 'tw.com.mitake:lib-sms:0.4.2'
 ```
 
 ## How to use
