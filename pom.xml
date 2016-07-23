@@ -8,7 +8,7 @@
 
     <name>lib-sms</name>
     <description>Mitake SMS library for Java</description>
-    <url>http://maven.apache.org</url>
+    <url>https://github.com/mitaketw/sms-java</url>
 
     <licenses>
         <license>
