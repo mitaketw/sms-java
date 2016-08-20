@@ -62,17 +62,7 @@ public class MitakeSmsSender {
 
             return (MitakeSmsSendResult) connectionError(ConnectionResult.EXCEPTION);
         } finally {
-            try {
-                if (is != null) {
-                    is.close();
-                }
-
-                if (conn != null) {
-                    conn.disconnect();
-                }
-            } catch (Exception e) {
-                LOG.error(e.getMessage());
-            }
+            closeConnection(is, conn);
         }
     }
 
@@ -105,17 +95,21 @@ public class MitakeSmsSender {
 
             return (MitakeSmsQueryResult) connectionError(ConnectionResult.EXCEPTION);
         } finally {
-            try {
-                if (is != null) {
-                    is.close();
-                }
+            closeConnection(is, conn);
+        }
+    }
 
-                if (conn != null) {
-                    conn.disconnect();
-                }
-            } catch (Exception e) {
-                LOG.error(e.getMessage());
+    private void closeConnection(InputStream is, HttpURLConnection conn) {
+        try {
+            if (is != null) {
+                is.close();
             }
+
+            if (conn != null) {
+                conn.disconnect();
+            }
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
         }
     }
 
