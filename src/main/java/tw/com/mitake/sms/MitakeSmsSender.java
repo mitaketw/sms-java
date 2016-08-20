@@ -4,6 +4,8 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tw.com.mitake.sms.result.MitakeSmsResult;
+import tw.com.mitake.sms.result.MitakeSmsSendResult;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -15,7 +17,8 @@ import java.util.Map;
 
 public class MitakeSmsSender {
     private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsSender.class);
-    private static final String DEFAULT_URL = "http://smexpress.mitake.com.tw/SmSendGet.asp";
+    private static final String BASE_URL = "http://smexpress.mitake.com.tw";
+    private static final String SEND_URL = BASE_URL + "/SmSendGet.asp";
 
     private static final String KEY_USERNAME = "username";
     private static final String KEY_PASSWORD = "password";
@@ -28,7 +31,7 @@ public class MitakeSmsSender {
     private static final String KEY_DEST_NAME = "DestName";
     private static final String KEY_CLIENT_ID = "ClientID";
 
-    public MitakeSmsResult send(String to, String message) {
+    public MitakeSmsSendResult send(String to, String message) {
         InputStream is = null;
         HttpURLConnection conn = null;
 
@@ -42,7 +45,7 @@ public class MitakeSmsSender {
             int responseCode = conn.getResponseCode();
 
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                return connectionError(ConnectionResult.FAIL);
+                return (MitakeSmsSendResult) connectionError(ConnectionResult.FAIL);
             }
 
             is = conn.getInputStream();
@@ -51,11 +54,11 @@ public class MitakeSmsSender {
 
             LOG.debug("response: {}", response);
 
-            return parseResult(response, to);
+            return new MitakeSmsSendResult(response, to);
         } catch (Exception e) {
             LOG.error(e.getMessage());
 
-            return connectionError(ConnectionResult.EXCEPTION);
+            return (MitakeSmsSendResult) connectionError(ConnectionResult.EXCEPTION);
         } finally {
             try {
                 if (is != null) {
@@ -75,10 +78,6 @@ public class MitakeSmsSender {
         return new MitakeSmsResult(connectionResult);
     }
 
-    private MitakeSmsResult parseResult(ArrayList<String> response, String to) {
-        return new MitakeSmsResult(response, to);
-    }
-
     private URL buildUrl(String to, String message) throws Exception {
         HashMap<String, String> map = new HashMap<String, String>();
 
@@ -94,7 +93,7 @@ public class MitakeSmsSender {
             sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
 
-        URL url = new URL(DEFAULT_URL + "?" + StringUtils.removeEnd(sb.toString(), "&"));
+        URL url = new URL(SEND_URL + "?" + StringUtils.removeEnd(sb.toString(), "&"));
 
         return url;
     }

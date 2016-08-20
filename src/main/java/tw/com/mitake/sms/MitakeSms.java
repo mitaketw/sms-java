@@ -1,8 +1,9 @@
 package tw.com.mitake.sms;
 
+import org.apache.commons.lang3.StringUtils;
 import tw.com.mitake.sms.listener.OnPostSendListener;
 import tw.com.mitake.sms.listener.OnPreSendListener;
-import org.apache.commons.lang3.StringUtils;
+import tw.com.mitake.sms.result.MitakeSmsSendResult;
 
 public class MitakeSms {
     private static String username;
@@ -34,19 +35,19 @@ public class MitakeSms {
         return password;
     }
 
-    public static MitakeSmsResult send(String to, String message) {
+    public static MitakeSmsSendResult send(String to, String message) {
         return send(to, message, null, null);
     }
 
-    public static MitakeSmsResult send(String to, String message, OnPreSendListener listener) {
+    public static MitakeSmsSendResult send(String to, String message, OnPreSendListener listener) {
         return send(to, message, listener, null);
     }
 
-    public static MitakeSmsResult send(String to, String message, OnPostSendListener listener) {
+    public static MitakeSmsSendResult send(String to, String message, OnPostSendListener listener) {
         return send(to, message, null, listener);
     }
 
-    public static MitakeSmsResult send(String to, String message, OnPreSendListener preListener, OnPostSendListener postListener) {
+    public static MitakeSmsSendResult send(String to, String message, OnPreSendListener preListener, OnPostSendListener postListener) {
         if (!init) {
             throw new RuntimeException("Init first");
         }
@@ -59,12 +60,12 @@ public class MitakeSms {
             preListener.onPreSend();
         }
 
-        MitakeSmsResult mitakeSmsResult = sender.send(to, message);
+        MitakeSmsSendResult result = sender.send(to, message);
 
         if (postListener != null) {
             postListener.onPostSend();
         }
 
-        return mitakeSmsResult;
+        return result;
     }
 }
