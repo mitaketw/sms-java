@@ -90,7 +90,7 @@ public class MitakeSmsSendResult extends MitakeSmsResult {
 
     @Override
     public String toString() {
-        StringBuffer sb = new StringBuffer("ConnectionResult: " + getConnectionResult().toString() + "\n");
+        StringBuffer sb = new StringBuffer("ConnectionResult: " + connectionResult.toString() + "\n");
 
         for (SmsResult result : results) {
             sb.append(result.toString()).append("\n");
