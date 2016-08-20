@@ -8,7 +8,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MitakeSmsResult {
-    private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsSender.class);
+    private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsResult.class);
     private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("\\[(\\d+)\\]");
     private static final Pattern FIELD_PATTERN = Pattern.compile("(\\w+)=([\\w\\p{InCJKUnifiedIdeographs}]+)");
     private static final Pattern ACCOUNT_POINT_PATTERN = Pattern.compile("AccountPoint=(\\d+)");
