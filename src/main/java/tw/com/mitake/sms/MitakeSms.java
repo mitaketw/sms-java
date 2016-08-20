@@ -3,7 +3,7 @@ package tw.com.mitake.sms;
 import org.apache.commons.lang3.StringUtils;
 import tw.com.mitake.sms.listener.OnPostSendListener;
 import tw.com.mitake.sms.listener.OnPreSendListener;
-import tw.com.mitake.sms.result.MitakeSmsQueryResult;
+import tw.com.mitake.sms.result.MitakeSmsQueryAccountPointResult;
 import tw.com.mitake.sms.result.MitakeSmsSendResult;
 
 public class MitakeSms {
@@ -66,12 +66,12 @@ public class MitakeSms {
         return result;
     }
 
-    public static MitakeSmsQueryResult queryAccountPoint() {
+    public static MitakeSmsQueryAccountPointResult queryAccountPoint() {
         if (!init) {
             throw new RuntimeException("Init first");
         }
 
-        MitakeSmsQueryResult result = sender.queryAccountPoint();
+        MitakeSmsQueryAccountPointResult result = sender.queryAccountPoint();
 
         return result;
     }

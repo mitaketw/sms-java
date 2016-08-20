@@ -6,12 +6,12 @@ import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MitakeSmsQueryResult extends MitakeSmsResult {
+public class MitakeSmsQueryAccountPointResult extends MitakeSmsResult {
     private static final Pattern ACCOUNT_POINT_PATTERN = Pattern.compile("AccountPoint=(\\d+)");
 
     private int accountPoint;
 
-    public MitakeSmsQueryResult(ArrayList<String> response) {
+    public MitakeSmsQueryAccountPointResult(ArrayList<String> response) {
         parseResult(response);
 
         connectionResult = ConnectionResult.OK;

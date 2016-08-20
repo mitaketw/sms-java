@@ -4,7 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tw.com.mitake.sms.result.MitakeSmsQueryResult;
+import tw.com.mitake.sms.result.MitakeSmsQueryAccountPointResult;
 import tw.com.mitake.sms.result.MitakeSmsResult;
 import tw.com.mitake.sms.result.MitakeSmsSendResult;
 
@@ -34,7 +34,6 @@ public class MitakeSmsSender {
     private static final String KEY_CLIENT_ID = "ClientID";
 
     public MitakeSmsSendResult send(String to, String message) {
-        InputStream is = null;
         HttpURLConnection conn = null;
 
         try {
@@ -50,11 +49,7 @@ public class MitakeSmsSender {
                 return (MitakeSmsSendResult) connectionError(ConnectionResult.FAIL);
             }
 
-            is = conn.getInputStream();
-
-            ArrayList<String> response = (ArrayList<String>) IOUtils.readLines(is, "big5");
-
-            LOG.debug("response: {}", response);
+            ArrayList<String> response = retrieveResponse(conn);
 
             return new MitakeSmsSendResult(response, to);
         } catch (Exception e) {
@@ -62,12 +57,11 @@ public class MitakeSmsSender {
 
             return (MitakeSmsSendResult) connectionError(ConnectionResult.EXCEPTION);
         } finally {
-            closeConnection(is, conn);
+            closeConnection(conn);
         }
     }
 
-    public MitakeSmsQueryResult queryAccountPoint() {
-        InputStream is = null;
+    public MitakeSmsQueryAccountPointResult queryAccountPoint() {
         HttpURLConnection conn = null;
 
         try {
@@ -80,31 +74,35 @@ public class MitakeSmsSender {
             int responseCode = conn.getResponseCode();
 
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                return (MitakeSmsQueryResult) connectionError(ConnectionResult.FAIL);
+                return (MitakeSmsQueryAccountPointResult) connectionError(ConnectionResult.FAIL);
             }
 
-            is = conn.getInputStream();
+            ArrayList<String> response = retrieveResponse(conn);
 
-            ArrayList<String> response = (ArrayList<String>) IOUtils.readLines(is, "big5");
-
-            LOG.debug("response: {}", response);
-
-            return new MitakeSmsQueryResult(response);
+            return new MitakeSmsQueryAccountPointResult(response);
         } catch (Exception e) {
             LOG.error(e.getMessage());
 
-            return (MitakeSmsQueryResult) connectionError(ConnectionResult.EXCEPTION);
+            return (MitakeSmsQueryAccountPointResult) connectionError(ConnectionResult.EXCEPTION);
         } finally {
-            closeConnection(is, conn);
+            closeConnection(conn);
         }
     }
 
-    private void closeConnection(InputStream is, HttpURLConnection conn) {
-        try {
-            if (is != null) {
-                is.close();
-            }
+    private ArrayList<String> retrieveResponse(HttpURLConnection conn) throws Exception {
+        InputStream is = conn.getInputStream();
 
+        ArrayList<String> response = (ArrayList<String>) IOUtils.readLines(is, "big5");
+
+        is.close();
+
+        LOG.debug("response: {}", response);
+
+        return response;
+    }
+
+    private void closeConnection(HttpURLConnection conn) {
+        try {
             if (conn != null) {
                 conn.disconnect();
             }

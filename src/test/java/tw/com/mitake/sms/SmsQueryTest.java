@@ -2,7 +2,7 @@ package tw.com.mitake.sms;
 
 import org.junit.Before;
 import org.junit.Test;
-import tw.com.mitake.sms.result.MitakeSmsQueryResult;
+import tw.com.mitake.sms.result.MitakeSmsQueryAccountPointResult;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -14,7 +14,7 @@ public class SmsQueryTest {
 
     @Test
     public void testGetAccountPoint() {
-        MitakeSmsQueryResult result = MitakeSms.queryAccountPoint();
+        MitakeSmsQueryAccountPointResult result = MitakeSms.queryAccountPoint();
 
         System.out.println("result: " + result.toString());
 
