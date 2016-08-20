@@ -12,6 +12,8 @@ public class MitakeSmsResult {
     private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("\\[(\\d+)\\]");
     private static final Pattern FIELD_PATTERN = Pattern.compile("(\\w+)=([\\w\\p{InCJKUnifiedIdeographs}]+)");
     private static final Pattern ACCOUNT_POINT_PATTERN = Pattern.compile("AccountPoint=(\\d+)");
+    private static final String MSGID = "msgid";
+    private static final String STATUSCODE = "statuscode";
 
     private ConnectionResult connectionResult;
     private ArrayList<SmsResult> results;
@@ -53,11 +55,11 @@ public class MitakeSmsResult {
                 String group1Value = fieldMatcher.group(1);
                 String group2Value = fieldMatcher.group(2);
 
-                if (group1Value.equals("msgid")) {
+                if (group1Value.equals(MSGID)) {
                     result.messageId = group2Value;
                 }
 
-                if (group1Value.equals("statuscode")) {
+                if (group1Value.equals(STATUSCODE)) {
                     result.statusCode = StatusCode.findByKey(group2Value);
                 }
             }
