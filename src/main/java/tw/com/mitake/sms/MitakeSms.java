@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import tw.com.mitake.sms.listener.OnPostSendListener;
 import tw.com.mitake.sms.listener.OnPreSendListener;
 import tw.com.mitake.sms.result.MitakeSmsQueryAccountPointResult;
+import tw.com.mitake.sms.result.MitakeSmsQueryMessageStatusResult;
 import tw.com.mitake.sms.result.MitakeSmsSendResult;
 
 public class MitakeSms {
@@ -72,6 +73,16 @@ public class MitakeSms {
         }
 
         MitakeSmsQueryAccountPointResult result = sender.queryAccountPoint();
+
+        return result;
+    }
+
+    public static MitakeSmsQueryMessageStatusResult queryMessageStatus(String messageId) {
+        if (!init) {
+            throw new RuntimeException("Init first");
+        }
+
+        MitakeSmsQueryMessageStatusResult result = sender.queryMessageStatus(messageId);
 
         return result;
     }
