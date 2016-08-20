@@ -3,12 +3,13 @@ package tw.com.mitake.sms;
 import org.apache.commons.lang3.StringUtils;
 import tw.com.mitake.sms.listener.OnPostSendListener;
 import tw.com.mitake.sms.listener.OnPreSendListener;
+import tw.com.mitake.sms.result.MitakeSmsQueryResult;
 import tw.com.mitake.sms.result.MitakeSmsSendResult;
 
 public class MitakeSms {
     private static String username;
     private static String password;
-    private static MitakeSmsSender sender;
+    private static MitakeSmsSender sender = new MitakeSmsSender();
     private static boolean init;
 
     private MitakeSms() {
@@ -52,10 +53,6 @@ public class MitakeSms {
             throw new RuntimeException("Init first");
         }
 
-        if (sender == null) {
-            sender = new MitakeSmsSender();
-        }
-
         if (preListener != null) {
             preListener.onPreSend();
         }
@@ -65,6 +62,16 @@ public class MitakeSms {
         if (postListener != null) {
             postListener.onPostSend();
         }
+
+        return result;
+    }
+
+    public static MitakeSmsQueryResult queryAccountPoint() {
+        if (!init) {
+            throw new RuntimeException("Init first");
+        }
+
+        MitakeSmsQueryResult result = sender.queryAccountPoint();
 
         return result;
     }

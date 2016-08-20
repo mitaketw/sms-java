@@ -4,6 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tw.com.mitake.sms.result.MitakeSmsQueryResult;
 import tw.com.mitake.sms.result.MitakeSmsResult;
 import tw.com.mitake.sms.result.MitakeSmsSendResult;
 
@@ -19,6 +20,7 @@ public class MitakeSmsSender {
     private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsSender.class);
     private static final String BASE_URL = "http://smexpress.mitake.com.tw";
     private static final String SEND_URL = BASE_URL + "/SmSendGet.asp";
+    private static final String QUERY_URL = BASE_URL + "/SmQueryGet.asp";
 
     private static final String KEY_USERNAME = "username";
     private static final String KEY_PASSWORD = "password";
@@ -74,6 +76,49 @@ public class MitakeSmsSender {
         }
     }
 
+    public MitakeSmsQueryResult queryAccountPoint() {
+        InputStream is = null;
+        HttpURLConnection conn = null;
+
+        try {
+            URL url = buildQueryAccountPointUrl();
+
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                return (MitakeSmsQueryResult) connectionError(ConnectionResult.FAIL);
+            }
+
+            is = conn.getInputStream();
+
+            ArrayList<String> response = (ArrayList<String>) IOUtils.readLines(is, "big5");
+
+            LOG.debug("response: {}", response);
+
+            return new MitakeSmsQueryResult(response);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+
+            return (MitakeSmsQueryResult) connectionError(ConnectionResult.EXCEPTION);
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                }
+
+                if (conn != null) {
+                    conn.disconnect();
+                }
+            } catch (Exception e) {
+                LOG.error(e.getMessage());
+            }
+        }
+    }
+
     private MitakeSmsResult connectionError(ConnectionResult connectionResult) {
         return new MitakeSmsResult(connectionResult);
     }
@@ -94,6 +139,23 @@ public class MitakeSmsSender {
         }
 
         URL url = new URL(SEND_URL + "?" + StringUtils.removeEnd(sb.toString(), "&"));
+
+        return url;
+    }
+
+    private URL buildQueryAccountPointUrl() throws Exception {
+        HashMap<String, String> map = new HashMap<String, String>();
+
+        map.put(KEY_USERNAME, MitakeSms.getUsername());
+        map.put(KEY_PASSWORD, MitakeSms.getPassword());
+
+        StringBuffer sb = new StringBuffer();
+
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+        }
+
+        URL url = new URL(QUERY_URL + "?" + StringUtils.removeEnd(sb.toString(), "&"));
 
         return url;
     }
