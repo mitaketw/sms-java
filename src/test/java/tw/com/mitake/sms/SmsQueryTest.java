@@ -23,7 +23,7 @@ public class SmsQueryTest {
     }
 
     @Test
-    public void testGetMessageStatus(){
+    public void testGetMessageStatus() {
         MitakeSmsQueryMessageStatusResult result = MitakeSms.queryMessageStatus("messageid");
 
         System.out.println("result: " + result.toString());
