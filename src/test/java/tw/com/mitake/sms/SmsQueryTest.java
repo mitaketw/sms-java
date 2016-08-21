@@ -28,8 +28,6 @@ public class SmsQueryTest {
 
         MitakeSmsQueryAccountPointResult result = MitakeSms.queryAccountPoint();
 
-        System.out.println("result: " + result.toString());
-
         assertNotNull(result);
     }
 
@@ -43,8 +41,6 @@ public class SmsQueryTest {
         }
 
         MitakeSmsQueryMessageStatusResult result = MitakeSms.queryMessageStatus("messageid");
-
-        System.out.println("result: " + result.toString());
 
         assertNotNull(result);
     }
