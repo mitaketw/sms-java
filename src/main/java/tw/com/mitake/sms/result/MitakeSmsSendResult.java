@@ -1,32 +1,29 @@
-package tw.com.mitake.sms;
+package tw.com.mitake.sms.result;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tw.com.mitake.sms.ConnectionResult;
+import tw.com.mitake.sms.StatusCode;
 
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MitakeSmsResult {
-    private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsSender.class);
+public class MitakeSmsSendResult extends MitakeSmsResult {
+    private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsSendResult.class);
     private static final Pattern PHONE_NUMBER_PATTERN = Pattern.compile("\\[(\\d+)\\]");
     private static final Pattern FIELD_PATTERN = Pattern.compile("(\\w+)=([\\w\\p{InCJKUnifiedIdeographs}]+)");
     private static final Pattern ACCOUNT_POINT_PATTERN = Pattern.compile("AccountPoint=(\\d+)");
     private static final String MSGID = "msgid";
     private static final String STATUSCODE = "statuscode";
 
-    private ConnectionResult connectionResult;
     private ArrayList<SmsResult> results;
     private int accountPoint;
 
-    public MitakeSmsResult(ArrayList<String> response, String to) {
+    public MitakeSmsSendResult(ArrayList<String> response, String to) {
         parseResult(response, to);
 
-        this.connectionResult = ConnectionResult.OK;
-    }
-
-    public MitakeSmsResult(ConnectionResult connectionResult) {
-        this.connectionResult = connectionResult;
+        connectionResult = ConnectionResult.OK;
     }
 
     private void parseResult(ArrayList<String> response, String to) {
@@ -78,10 +75,6 @@ public class MitakeSmsResult {
 
     public int getAccountPoint() {
         return accountPoint;
-    }
-
-    public ConnectionResult getConnectionResult() {
-        return connectionResult;
     }
 
     public class SmsResult {

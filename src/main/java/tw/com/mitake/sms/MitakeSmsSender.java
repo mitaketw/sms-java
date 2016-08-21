@@ -4,9 +4,14 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tw.com.mitake.sms.result.MitakeSmsQueryAccountPointResult;
+import tw.com.mitake.sms.result.MitakeSmsQueryMessageStatusResult;
+import tw.com.mitake.sms.result.MitakeSmsResult;
+import tw.com.mitake.sms.result.MitakeSmsSendResult;
 
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -15,10 +20,13 @@ import java.util.Map;
 
 public class MitakeSmsSender {
     private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsSender.class);
-    private static final String DEFAULT_URL = "http://smexpress.mitake.com.tw/SmSendGet.asp";
+    private static final String BASE_URL = "http://smexpress.mitake.com.tw";
+    private static final String SEND_URL = BASE_URL + "/SmSendGet.asp";
+    private static final String QUERY_URL = BASE_URL + "/SmQueryGet.asp";
 
     private static final String KEY_USERNAME = "username";
     private static final String KEY_PASSWORD = "password";
+    private static final String KEY_MSG_ID = "msgid";
     private static final String KEY_MESSAGE = "smbody";
     private static final String KEY_DESTINATION = "dstaddr";
     private static final String KEY_ENCODING = "encoding";
@@ -28,8 +36,7 @@ public class MitakeSmsSender {
     private static final String KEY_DEST_NAME = "DestName";
     private static final String KEY_CLIENT_ID = "ClientID";
 
-    public MitakeSmsResult send(String to, String message) {
-        InputStream is = null;
+    public MitakeSmsSendResult send(String to, String message) {
         HttpURLConnection conn = null;
 
         try {
@@ -42,41 +49,101 @@ public class MitakeSmsSender {
             int responseCode = conn.getResponseCode();
 
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                return connectionError(ConnectionResult.FAIL);
+                return (MitakeSmsSendResult) connectionError(ConnectionResult.FAIL);
             }
 
-            is = conn.getInputStream();
+            ArrayList<String> response = retrieveResponse(conn);
 
-            ArrayList<String> response = (ArrayList<String>) IOUtils.readLines(is, "big5");
-
-            LOG.debug("response: {}", response);
-
-            return parseResult(response, to);
+            return new MitakeSmsSendResult(response, to);
         } catch (Exception e) {
             LOG.error(e.getMessage());
 
-            return connectionError(ConnectionResult.EXCEPTION);
+            return (MitakeSmsSendResult) connectionError(ConnectionResult.EXCEPTION);
         } finally {
-            try {
-                if (is != null) {
-                    is.close();
-                }
+            closeConnection(conn);
+        }
+    }
 
-                if (conn != null) {
-                    conn.disconnect();
-                }
-            } catch (Exception e) {
-                LOG.error(e.getMessage());
+    public MitakeSmsQueryAccountPointResult queryAccountPoint() {
+        HttpURLConnection conn = null;
+
+        try {
+            URL url = buildQueryAccountPointUrl();
+
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                return (MitakeSmsQueryAccountPointResult) connectionError(ConnectionResult.FAIL);
             }
+
+            ArrayList<String> response = retrieveResponse(conn);
+
+            return new MitakeSmsQueryAccountPointResult(response);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+
+            return (MitakeSmsQueryAccountPointResult) connectionError(ConnectionResult.EXCEPTION);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+
+    public MitakeSmsQueryMessageStatusResult queryMessageStatus(String messageId) {
+        HttpURLConnection conn = null;
+
+        try {
+            URL url = buildQueryMessageStatusUrl(messageId);
+
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("GET");
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                return (MitakeSmsQueryMessageStatusResult) connectionError(ConnectionResult.FAIL);
+            }
+
+            ArrayList<String> response = retrieveResponse(conn);
+
+            return new MitakeSmsQueryMessageStatusResult(response);
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+
+            return (MitakeSmsQueryMessageStatusResult) connectionError(ConnectionResult.EXCEPTION);
+        } finally {
+            closeConnection(conn);
+        }
+    }
+
+    private ArrayList<String> retrieveResponse(HttpURLConnection conn) throws Exception {
+        InputStream is = conn.getInputStream();
+
+        ArrayList<String> response = (ArrayList<String>) IOUtils.readLines(is, "big5");
+
+        is.close();
+
+        LOG.debug("response: {}", response);
+
+        return response;
+    }
+
+    private void closeConnection(HttpURLConnection conn) {
+        try {
+            if (conn != null) {
+                conn.disconnect();
+            }
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
         }
     }
 
     private MitakeSmsResult connectionError(ConnectionResult connectionResult) {
         return new MitakeSmsResult(connectionResult);
-    }
-
-    private MitakeSmsResult parseResult(ArrayList<String> response, String to) {
-        return new MitakeSmsResult(response, to);
     }
 
     private URL buildUrl(String to, String message) throws Exception {
@@ -88,15 +155,36 @@ public class MitakeSmsSender {
         map.put(KEY_ENCODING, "UTF8");
         map.put(KEY_MESSAGE, encode(message, map.get(KEY_ENCODING)));
 
+        return getUrl(SEND_URL, map);
+    }
+
+    private URL buildQueryMessageStatusUrl(String messageId) throws Exception {
+        HashMap<String, String> map = new HashMap<String, String>();
+
+        map.put(KEY_USERNAME, MitakeSms.getUsername());
+        map.put(KEY_PASSWORD, MitakeSms.getPassword());
+        map.put(KEY_MSG_ID, messageId);
+
+        return getUrl(QUERY_URL, map);
+    }
+
+    private URL buildQueryAccountPointUrl() throws Exception {
+        HashMap<String, String> map = new HashMap<String, String>();
+
+        map.put(KEY_USERNAME, MitakeSms.getUsername());
+        map.put(KEY_PASSWORD, MitakeSms.getPassword());
+
+        return getUrl(QUERY_URL, map);
+    }
+
+    private URL getUrl(String destUrl, HashMap<String, String> map) throws MalformedURLException {
         StringBuffer sb = new StringBuffer();
 
         for (Map.Entry<String, String> entry : map.entrySet()) {
             sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
 
-        URL url = new URL(DEFAULT_URL + "?" + StringUtils.removeEnd(sb.toString(), "&"));
-
-        return url;
+        return new URL(destUrl + "?" + StringUtils.removeEnd(sb.toString(), "&"));
     }
 
     private String encode(String message, String encoding) throws Exception {
