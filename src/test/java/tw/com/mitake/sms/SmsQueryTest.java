@@ -19,6 +19,13 @@ public class SmsQueryTest {
 
     @Test
     public void testGetAccountPoint() {
+        // because server-side limits 1 req/s
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            LOG.error(e.getMessage());
+        }
+
         MitakeSmsQueryAccountPointResult result = MitakeSms.queryAccountPoint();
 
         System.out.println("result: " + result.toString());
