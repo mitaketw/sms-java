@@ -7,6 +7,8 @@ import tw.com.mitake.sms.result.MitakeSmsQueryAccountPointResult;
 import tw.com.mitake.sms.result.MitakeSmsQueryMessageStatusResult;
 import tw.com.mitake.sms.result.MitakeSmsSendResult;
 
+import java.util.List;
+
 public class MitakeSms {
     private static String username;
     private static String password;
@@ -77,12 +79,22 @@ public class MitakeSms {
         return result;
     }
 
-    public static MitakeSmsQueryMessageStatusResult queryMessageStatus(String messageId) {
+    public static MitakeSmsQueryMessageStatusResult queryMessageStatus(String... messageIds) {
         if (!init) {
             throw new RuntimeException("Init first");
         }
 
-        MitakeSmsQueryMessageStatusResult result = sender.queryMessageStatus(messageId);
+        MitakeSmsQueryMessageStatusResult result = sender.queryMessageStatus(messageIds);
+
+        return result;
+    }
+
+    public static MitakeSmsQueryMessageStatusResult queryMessageStatus(List<String> messageIds) {
+        if (!init) {
+            throw new RuntimeException("Init first");
+        }
+
+        MitakeSmsQueryMessageStatusResult result = sender.queryMessageStatus(messageIds.toArray(new String[0]));
 
         return result;
     }

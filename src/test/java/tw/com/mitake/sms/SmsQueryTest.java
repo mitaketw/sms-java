@@ -44,4 +44,18 @@ public class SmsQueryTest {
 
         assertNotNull(result);
     }
+
+    @Test
+    public void testGetMultiMessageStatus() {
+        // because server-side limits 1 req/s
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            LOG.error(e.getMessage());
+        }
+
+        MitakeSmsQueryMessageStatusResult result = MitakeSms.queryMessageStatus("messageid1", "messageid2", "messageid3", "messageid4");
+
+        assertNotNull(result);
+    }
 }
