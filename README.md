@@ -14,14 +14,14 @@ Mitake SMS library for Java
 <dependency>
   <groupId>tw.com.mitake</groupId>
   <artifactId>lib-sms</artifactId>
-  <version>0.5.0</version>
+  <version>0.6.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```groovy
-compile 'tw.com.mitake:lib-sms:0.5.0'
+compile 'tw.com.mitake:lib-sms:0.6.0'
 ```
 
 ## How to use
@@ -44,10 +44,14 @@ MitakeSmsResult result = MitakeSms.send("0912345678", "this is a sample message"
 MitakeSmsQueryAccountPointResult result = MitakeSms.queryAccountPoint();
 ```
 
-### Query message status
+### Query message status (support multiple messages)
 
 ```java
-MitakeSmsQueryMessageStatusResult result = MitakeSms.queryMessageStatus("messageid");
+MitakeSmsQueryMessageStatusResult result = MitakeSms.queryMessageStatus("messageid1", "messageid2");
+
+// or
+
+MitakeSmsQueryMessageStatusResult result = MitakeSms.queryMessageStatus(List<String> messageIds);
 ```
 
 ## Official Document
