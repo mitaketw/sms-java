@@ -17,7 +17,7 @@ public class MitakeSmsSendResult extends MitakeSmsResult {
     private static final String MSGID = "msgid";
     private static final String STATUSCODE = "statuscode";
 
-    private ArrayList<SmsResult> results;
+    private ArrayList<SendResult> results;
     private int accountPoint;
 
     public MitakeSmsSendResult(ArrayList<String> response, String to) {
@@ -27,15 +27,15 @@ public class MitakeSmsSendResult extends MitakeSmsResult {
     }
 
     private void parseResult(ArrayList<String> response, String to) {
-        results = new ArrayList<SmsResult>();
+        results = new ArrayList<SendResult>();
 
-        SmsResult result = null;
+        SendResult result = null;
 
         for (String line : response) {
             Matcher phoneNumberMatcher = PHONE_NUMBER_PATTERN.matcher(line);
 
             if (phoneNumberMatcher.find()) {
-                result = new SmsResult();
+                result = new SendResult();
 
                 results.add(result);
 
@@ -69,7 +69,7 @@ public class MitakeSmsSendResult extends MitakeSmsResult {
         }
     }
 
-    public ArrayList<SmsResult> getResults() {
+    public ArrayList<SendResult> getResults() {
         return results;
     }
 
@@ -77,7 +77,7 @@ public class MitakeSmsSendResult extends MitakeSmsResult {
         return accountPoint;
     }
 
-    public class SmsResult {
+    public class SendResult {
         private String phoneNumber;
         private String messageId;
         private StatusCode statusCode;
@@ -92,7 +92,7 @@ public class MitakeSmsSendResult extends MitakeSmsResult {
     public String toString() {
         StringBuffer sb = new StringBuffer("ConnectionResult: " + connectionResult.toString() + "\n");
 
-        for (SmsResult result : results) {
+        for (SendResult result : results) {
             sb.append(result.toString()).append("\n");
         }
 

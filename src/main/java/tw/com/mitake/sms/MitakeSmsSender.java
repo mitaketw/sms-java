@@ -92,11 +92,11 @@ public class MitakeSmsSender {
         }
     }
 
-    public MitakeSmsQueryMessageStatusResult queryMessageStatus(String messageId) {
+    public MitakeSmsQueryMessageStatusResult queryMessageStatus(String... messageIds) {
         HttpURLConnection conn = null;
 
         try {
-            URL url = buildQueryMessageStatusUrl(messageId);
+            URL url = buildQueryMessageStatusUrl(messageIds);
 
             conn = (HttpURLConnection) url.openConnection();
 
@@ -147,10 +147,8 @@ public class MitakeSmsSender {
     }
 
     private URL buildUrl(String to, String message) throws Exception {
-        HashMap<String, String> map = new HashMap<String, String>();
+        HashMap<String, String> map = buildUsernameAndPassword();
 
-        map.put(KEY_USERNAME, MitakeSms.getUsername());
-        map.put(KEY_PASSWORD, MitakeSms.getPassword());
         map.put(KEY_DESTINATION, to);
         map.put(KEY_ENCODING, "UTF8");
         map.put(KEY_MESSAGE, encode(message, map.get(KEY_ENCODING)));
@@ -158,23 +156,27 @@ public class MitakeSmsSender {
         return getUrl(SEND_URL, map);
     }
 
-    private URL buildQueryMessageStatusUrl(String messageId) throws Exception {
-        HashMap<String, String> map = new HashMap<String, String>();
+    private URL buildQueryMessageStatusUrl(String... messageIds) throws Exception {
+        HashMap<String, String> map = buildUsernameAndPassword();
 
-        map.put(KEY_USERNAME, MitakeSms.getUsername());
-        map.put(KEY_PASSWORD, MitakeSms.getPassword());
-        map.put(KEY_MSG_ID, messageId);
+        map.put(KEY_MSG_ID, StringUtils.join(messageIds, ","));
 
         return getUrl(QUERY_URL, map);
     }
 
     private URL buildQueryAccountPointUrl() throws Exception {
+        HashMap<String, String> map = buildUsernameAndPassword();
+
+        return getUrl(QUERY_URL, map);
+    }
+
+    private HashMap<String, String> buildUsernameAndPassword() {
         HashMap<String, String> map = new HashMap<String, String>();
 
         map.put(KEY_USERNAME, MitakeSms.getUsername());
         map.put(KEY_PASSWORD, MitakeSms.getPassword());
 
-        return getUrl(QUERY_URL, map);
+        return map;
     }
 
     private URL getUrl(String destUrl, HashMap<String, String> map) throws MalformedURLException {
