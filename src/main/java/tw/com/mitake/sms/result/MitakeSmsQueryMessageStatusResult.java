@@ -13,9 +13,7 @@ public class MitakeSmsQueryMessageStatusResult extends MitakeSmsResult {
     private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsQueryMessageStatusResult.class);
     private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMddHHmmss");
 
-    private String messageId;
-    private StatusCode statusCode;
-    private Date date;
+    private ArrayList<QueryMessageStatusResult> results;
 
     public MitakeSmsQueryMessageStatusResult(ArrayList<String> response) {
         parseResult(response);
@@ -24,40 +22,47 @@ public class MitakeSmsQueryMessageStatusResult extends MitakeSmsResult {
     }
 
     private void parseResult(ArrayList<String> response) {
+        results = new ArrayList<QueryMessageStatusResult>();
+
         for (String line : response) {
             try {
                 String[] parts = line.split("\\t");
 
-                messageId = parts[0];
-                statusCode = StatusCode.findByKey(parts[1]);
-                date = SDF.parse(parts[2]);
+                QueryMessageStatusResult result = new QueryMessageStatusResult();
 
-                break;
+                result.messageId = parts[0];
+                result.statusCode = StatusCode.findByKey(parts[1]);
+                result.date = SDF.parse(parts[2]);
+
+                results.add(result);
             } catch (Exception e) {
                 LOG.error(e.getMessage());
             }
         }
     }
 
-    public String getMessageId() {
-        return messageId;
+    public ArrayList<QueryMessageStatusResult> getResults() {
+        return results;
     }
 
-    public StatusCode getStatusCode() {
-        return statusCode;
-    }
+    public class QueryMessageStatusResult {
+        private String messageId;
+        private StatusCode statusCode;
+        private Date date;
 
-    public Date getDate() {
-        return date;
+        @Override
+        public String toString() {
+            return "messageId: " + messageId + ", statusCode: " + statusCode.getMessage() + ", date: " + SDF.format(date);
+        }
     }
 
     @Override
     public String toString() {
         StringBuffer sb = new StringBuffer("ConnectionResult: " + connectionResult.toString() + "\n");
 
-        sb.append("messageId: ").append(messageId)
-                .append(", statusCode: ").append(statusCode.getMessage())
-                .append(", date: ").append(SDF.format(date));
+        for (QueryMessageStatusResult result : results) {
+            sb.append(result.toString()).append("\n");
+        }
 
         return sb.toString();
     }
