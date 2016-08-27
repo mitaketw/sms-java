@@ -14,23 +14,26 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
 public class MitakeSmsSender {
+    public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMddHHmmss");
+
     private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsSender.class);
     private static final String BASE_URL = "http://smexpress.mitake.com.tw";
     private static final String SEND_URL = BASE_URL + "/SmSendGet.asp";
     private static final String QUERY_URL = BASE_URL + "/SmQueryGet.asp";
-
     private static final String KEY_USERNAME = "username";
     private static final String KEY_PASSWORD = "password";
     private static final String KEY_MSG_ID = "msgid";
     private static final String KEY_MESSAGE = "smbody";
     private static final String KEY_DESTINATION = "dstaddr";
     private static final String KEY_ENCODING = "encoding";
-    private static final String KEY_SCHEDULE = "dlvtime";
+    private static final String KEY_DELIVERY_TIME = "dlvtime";
     private static final String KEY_TIME_TO_LIVE = "vldtime";
     private static final String KEY_RESPONSE = "response";
     private static final String KEY_DEST_NAME = "DestName";
@@ -154,6 +157,12 @@ public class MitakeSmsSender {
         map.put(KEY_ENCODING, UTF8);
         map.put(KEY_MESSAGE, encode(opts.getMessage(), UTF8));
 
+        Calendar deliveryTime = opts.getDeliveryTime();
+
+        if (deliveryTime != null) {
+            map.put(KEY_DELIVERY_TIME, SDF.format(deliveryTime.getTime()));
+        }
+
         return getUrl(SEND_URL, map);
     }
 
@@ -187,7 +196,11 @@ public class MitakeSmsSender {
             sb.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
         }
 
-        return new URL(destUrl + "?" + StringUtils.removeEnd(sb.toString(), "&"));
+        URL url = new URL(destUrl + "?" + StringUtils.removeEnd(sb.toString(), "&"));
+
+        LOG.debug("url: {}", url.toString());
+
+        return url;
     }
 
     private String encode(String message, String encoding) throws Exception {

@@ -3,15 +3,14 @@ package tw.com.mitake.sms.result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tw.com.mitake.sms.ConnectionResult;
+import tw.com.mitake.sms.MitakeSmsSender;
 import tw.com.mitake.sms.StatusCode;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
 public class MitakeSmsQueryMessageStatusResult extends MitakeSmsResult {
     private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsQueryMessageStatusResult.class);
-    private static final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMddHHmmss");
 
     private ArrayList<QueryMessageStatusResult> results;
 
@@ -32,7 +31,7 @@ public class MitakeSmsQueryMessageStatusResult extends MitakeSmsResult {
 
                 result.messageId = parts[0];
                 result.statusCode = StatusCode.findByKey(parts[1]);
-                result.date = SDF.parse(parts[2]);
+                result.date = MitakeSmsSender.SDF.parse(parts[2]);
 
                 results.add(result);
             } catch (Exception e) {
@@ -52,7 +51,7 @@ public class MitakeSmsQueryMessageStatusResult extends MitakeSmsResult {
 
         @Override
         public String toString() {
-            return "messageId: " + messageId + ", statusCode: " + statusCode.getMessage() + ", date: " + SDF.format(date);
+            return "messageId: " + messageId + ", statusCode: " + statusCode.getMessage() + ", date: " + MitakeSmsSender.SDF.format(date);
         }
     }
 

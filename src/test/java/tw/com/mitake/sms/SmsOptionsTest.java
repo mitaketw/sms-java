@@ -2,8 +2,6 @@ package tw.com.mitake.sms;
 
 import org.junit.Before;
 import org.junit.Test;
-import tw.com.mitake.sms.listener.OnPostSendListener;
-import tw.com.mitake.sms.listener.OnPreSendListener;
 import tw.com.mitake.sms.result.MitakeSmsSendResult;
 
 import static org.junit.Assert.assertNotNull;
@@ -16,11 +14,19 @@ public class SmsOptionsTest {
 
     @Test
     public void testSms() {
-        SendOptions opts = new SendOptions();
+        SendOptions opts = new SendOptions().addDestination("phone1").addDestination("phone2").setMessage("Hello World");
 
-        opts.addDestination("phone1");
-        opts.addDestination("phone2");
-        opts.setMessage("Hello World");
+        MitakeSmsSendResult result = MitakeSms.send(opts);
+
+        System.out.println("result: " + result.toString());
+
+        assertNotNull(result);
+    }
+
+    @Test
+    public void testDeliveryTimeSms() {
+        SendOptions opts = new SendOptions().addDestination(System.getenv("MITAKE_SMS_TO")).setMessage("Hello World")
+                .setDeliveryTime(5000);
 
         MitakeSmsSendResult result = MitakeSms.send(opts);
 
