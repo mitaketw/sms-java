@@ -17,7 +17,7 @@ public class MitakeSmsSendResult extends MitakeSmsResult {
     private static final String MSGID = "msgid";
     private static final String STATUSCODE = "statuscode";
 
-    private ArrayList<SendResult> results;
+    private ArrayList<SendResult> results = new ArrayList<SendResult>();
     private int accountPoint;
 
     public MitakeSmsSendResult(ArrayList<String> response, String to) {
@@ -27,8 +27,6 @@ public class MitakeSmsSendResult extends MitakeSmsResult {
     }
 
     private void parseResult(ArrayList<String> response, String to) {
-        results = new ArrayList<SendResult>();
-
         SendResult result = null;
 
         for (String line : response) {

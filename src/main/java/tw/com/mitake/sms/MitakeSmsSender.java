@@ -10,6 +10,7 @@ import tw.com.mitake.sms.result.MitakeSmsResult;
 import tw.com.mitake.sms.result.MitakeSmsSendResult;
 
 import java.io.InputStream;
+import java.lang.reflect.Constructor;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -53,7 +54,7 @@ public class MitakeSmsSender {
             int responseCode = conn.getResponseCode();
 
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                return (MitakeSmsSendResult) connectionError(ConnectionResult.FAIL);
+                return connectionError(MitakeSmsSendResult.class, ConnectionResult.FAIL);
             }
 
             ArrayList<String> response = retrieveResponse(conn);
@@ -62,7 +63,7 @@ public class MitakeSmsSender {
         } catch (Exception e) {
             LOG.error(e.getMessage());
 
-            return (MitakeSmsSendResult) connectionError(ConnectionResult.EXCEPTION);
+            return connectionError(MitakeSmsSendResult.class, ConnectionResult.EXCEPTION);
         } finally {
             closeConnection(conn);
         }
@@ -81,7 +82,7 @@ public class MitakeSmsSender {
             int responseCode = conn.getResponseCode();
 
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                return (MitakeSmsQueryAccountPointResult) connectionError(ConnectionResult.FAIL);
+                return connectionError(MitakeSmsQueryAccountPointResult.class, ConnectionResult.FAIL);
             }
 
             ArrayList<String> response = retrieveResponse(conn);
@@ -90,7 +91,7 @@ public class MitakeSmsSender {
         } catch (Exception e) {
             LOG.error(e.getMessage());
 
-            return (MitakeSmsQueryAccountPointResult) connectionError(ConnectionResult.EXCEPTION);
+            return connectionError(MitakeSmsQueryAccountPointResult.class, ConnectionResult.EXCEPTION);
         } finally {
             closeConnection(conn);
         }
@@ -109,7 +110,7 @@ public class MitakeSmsSender {
             int responseCode = conn.getResponseCode();
 
             if (responseCode != HttpURLConnection.HTTP_OK) {
-                return (MitakeSmsQueryMessageStatusResult) connectionError(ConnectionResult.FAIL);
+                return connectionError(MitakeSmsQueryMessageStatusResult.class, ConnectionResult.FAIL);
             }
 
             ArrayList<String> response = retrieveResponse(conn);
@@ -118,7 +119,7 @@ public class MitakeSmsSender {
         } catch (Exception e) {
             LOG.error(e.getMessage());
 
-            return (MitakeSmsQueryMessageStatusResult) connectionError(ConnectionResult.EXCEPTION);
+            return connectionError(MitakeSmsQueryMessageStatusResult.class, ConnectionResult.EXCEPTION);
         } finally {
             closeConnection(conn);
         }
@@ -146,8 +147,18 @@ public class MitakeSmsSender {
         }
     }
 
-    private MitakeSmsResult connectionError(ConnectionResult connectionResult) {
-        return new MitakeSmsResult(connectionResult);
+    private <T> T connectionError(Class<? extends MitakeSmsResult> clazz, ConnectionResult connectionResult) {
+        try {
+            Constructor<?> ctor = clazz.getConstructor(ConnectionResult.class);
+
+            Object o = ctor.newInstance(connectionResult);
+
+            return (T) o;
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+
+            return null;
+        }
     }
 
     private URL buildSendUrl(SendOptions opts) throws Exception {

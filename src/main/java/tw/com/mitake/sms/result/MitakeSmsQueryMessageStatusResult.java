@@ -12,7 +12,7 @@ import java.util.Date;
 public class MitakeSmsQueryMessageStatusResult extends MitakeSmsResult {
     private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsQueryMessageStatusResult.class);
 
-    private ArrayList<QueryMessageStatusResult> results;
+    private ArrayList<QueryMessageStatusResult> results = new ArrayList<QueryMessageStatusResult>();
 
     public MitakeSmsQueryMessageStatusResult(ArrayList<String> response) {
         parseResult(response);
@@ -21,8 +21,6 @@ public class MitakeSmsQueryMessageStatusResult extends MitakeSmsResult {
     }
 
     private void parseResult(ArrayList<String> response) {
-        results = new ArrayList<QueryMessageStatusResult>();
-
         for (String line : response) {
             try {
                 String[] parts = line.split("\\t");
