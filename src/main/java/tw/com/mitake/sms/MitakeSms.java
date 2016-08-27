@@ -5,6 +5,7 @@ import tw.com.mitake.sms.listener.OnPostSendListener;
 import tw.com.mitake.sms.listener.OnPreSendListener;
 import tw.com.mitake.sms.result.MitakeSmsQueryAccountPointResult;
 import tw.com.mitake.sms.result.MitakeSmsQueryMessageStatusResult;
+import tw.com.mitake.sms.result.MitakeSmsResult;
 import tw.com.mitake.sms.result.MitakeSmsSendResult;
 
 import java.util.List;
@@ -75,6 +76,14 @@ public class MitakeSms {
     }
 
     public static MitakeSmsSendResult send(SendOptions opts) {
+        if (opts.getDestinations().isEmpty()) {
+            return (MitakeSmsSendResult) new MitakeSmsResult(ConnectionResult.FAIL);
+        }
+
+        if (StringUtils.isEmpty(opts.getMessage())) {
+            return (MitakeSmsSendResult) new MitakeSmsResult(ConnectionResult.FAIL);
+        }
+
         return sender.send(opts);
     }
 

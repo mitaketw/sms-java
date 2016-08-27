@@ -35,6 +35,7 @@ public class MitakeSmsSender {
     private static final String KEY_RESPONSE = "response";
     private static final String KEY_DEST_NAME = "DestName";
     private static final String KEY_CLIENT_ID = "ClientID";
+    private static final String UTF8 = "UTF8";
 
     public MitakeSmsSendResult send(SendOptions opts) {
         HttpURLConnection conn = null;
@@ -150,8 +151,8 @@ public class MitakeSmsSender {
         HashMap<String, String> map = buildUsernameAndPassword();
 
         map.put(KEY_DESTINATION, StringUtils.join(opts.getDestinations(), ","));
-        map.put(KEY_ENCODING, "UTF8");
-        map.put(KEY_MESSAGE, encode(opts.getMessage(), map.get(KEY_ENCODING)));
+        map.put(KEY_ENCODING, UTF8);
+        map.put(KEY_MESSAGE, encode(opts.getMessage(), UTF8));
 
         return getUrl(SEND_URL, map);
     }
