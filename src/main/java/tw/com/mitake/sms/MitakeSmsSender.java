@@ -36,11 +36,11 @@ public class MitakeSmsSender {
     private static final String KEY_DEST_NAME = "DestName";
     private static final String KEY_CLIENT_ID = "ClientID";
 
-    public MitakeSmsSendResult send(String to, String message) {
+    public MitakeSmsSendResult send(SendOptions opts) {
         HttpURLConnection conn = null;
 
         try {
-            URL url = buildUrl(to, message);
+            URL url = buildUrl(opts);
 
             conn = (HttpURLConnection) url.openConnection();
 
@@ -54,7 +54,7 @@ public class MitakeSmsSender {
 
             ArrayList<String> response = retrieveResponse(conn);
 
-            return new MitakeSmsSendResult(response, to);
+            return new MitakeSmsSendResult(response, opts.getDestinations().get(0));
         } catch (Exception e) {
             LOG.error(e.getMessage());
 
@@ -146,12 +146,12 @@ public class MitakeSmsSender {
         return new MitakeSmsResult(connectionResult);
     }
 
-    private URL buildUrl(String to, String message) throws Exception {
+    private URL buildUrl(SendOptions opts) throws Exception {
         HashMap<String, String> map = buildUsernameAndPassword();
 
-        map.put(KEY_DESTINATION, to);
+        map.put(KEY_DESTINATION, StringUtils.join(opts.getDestinations(), ","));
         map.put(KEY_ENCODING, "UTF8");
-        map.put(KEY_MESSAGE, encode(message, map.get(KEY_ENCODING)));
+        map.put(KEY_MESSAGE, encode(opts.getMessage(), map.get(KEY_ENCODING)));
 
         return getUrl(SEND_URL, map);
     }

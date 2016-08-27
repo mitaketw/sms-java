@@ -60,13 +60,22 @@ public class MitakeSms {
             preListener.onPreSend();
         }
 
-        MitakeSmsSendResult result = sender.send(to, message);
+        SendOptions opts = new SendOptions();
+
+        opts.addDestination(to);
+        opts.setMessage(message);
+
+        MitakeSmsSendResult result = send(opts);
 
         if (postListener != null) {
             postListener.onPostSend();
         }
 
         return result;
+    }
+
+    public static MitakeSmsSendResult send(SendOptions opts) {
+        return sender.send(opts);
     }
 
     public static MitakeSmsQueryAccountPointResult queryAccountPoint() {
