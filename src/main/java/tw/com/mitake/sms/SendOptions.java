@@ -7,6 +7,7 @@ public class SendOptions {
     private ArrayList<String> destinations = new ArrayList<String>();
     private String message;
     private Calendar deliveryTime;
+    private Calendar expiredTime;
 
     public SendOptions addDestination(String destination) {
         destinations.add(destination);
@@ -42,6 +43,24 @@ public class SendOptions {
         deliveryTime = Calendar.getInstance();
 
         deliveryTime.add(Calendar.SECOND, seconds);
+
+        return this;
+    }
+    
+    public SendOptions setExpiredTime(Calendar expiredTime) {
+        this.expiredTime = expiredTime;
+
+        return this;
+    }
+
+    public Calendar getExpiredTime() {
+        return expiredTime;
+    }
+
+    public SendOptions setExpiredTime(int seconds) {
+        expiredTime = Calendar.getInstance();
+
+        expiredTime.add(Calendar.SECOND, seconds);
 
         return this;
     }

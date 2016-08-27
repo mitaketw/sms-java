@@ -34,4 +34,16 @@ public class SmsOptionsTest {
 
         assertNotNull(result);
     }
+
+    @Test
+    public void testExpiredTimeSms() {
+        SendOptions opts = new SendOptions().addDestination(System.getenv("MITAKE_SMS_TO")).setMessage("Hello World, Expired Time")
+                .setExpiredTime(10);
+
+        MitakeSmsSendResult result = MitakeSms.send(opts);
+
+        System.out.println("result: " + result.toString());
+
+        assertNotNull(result);
+    }
 }

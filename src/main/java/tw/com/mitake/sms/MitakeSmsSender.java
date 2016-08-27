@@ -34,7 +34,7 @@ public class MitakeSmsSender {
     private static final String KEY_DESTINATION = "dstaddr";
     private static final String KEY_ENCODING = "encoding";
     private static final String KEY_DELIVERY_TIME = "dlvtime";
-    private static final String KEY_TIME_TO_LIVE = "vldtime";
+    private static final String KEY_EXPIRED_TIME = "vldtime";
     private static final String KEY_RESPONSE = "response";
     private static final String KEY_DEST_NAME = "DestName";
     private static final String KEY_CLIENT_ID = "ClientID";
@@ -44,7 +44,7 @@ public class MitakeSmsSender {
         HttpURLConnection conn = null;
 
         try {
-            URL url = buildUrl(opts);
+            URL url = buildSendUrl(opts);
 
             conn = (HttpURLConnection) url.openConnection();
 
@@ -150,7 +150,7 @@ public class MitakeSmsSender {
         return new MitakeSmsResult(connectionResult);
     }
 
-    private URL buildUrl(SendOptions opts) throws Exception {
+    private URL buildSendUrl(SendOptions opts) throws Exception {
         HashMap<String, String> map = buildUsernameAndPassword();
 
         map.put(KEY_DESTINATION, StringUtils.join(opts.getDestinations(), ","));
@@ -161,6 +161,12 @@ public class MitakeSmsSender {
 
         if (deliveryTime != null) {
             map.put(KEY_DELIVERY_TIME, SDF.format(deliveryTime.getTime()));
+        }
+
+        Calendar expiredTime = opts.getExpiredTime();
+
+        if (expiredTime != null) {
+            map.put(KEY_EXPIRED_TIME, SDF.format(expiredTime.getTime()));
         }
 
         return getUrl(SEND_URL, map);
