@@ -87,6 +87,10 @@ public class MitakeSms {
         return sender.send(opts);
     }
 
+    public static MitakeSmsSendResult send(List<SendOptions> optsList) {
+        return sender.send(optsList);
+    }
+
     public static MitakeSmsQueryAccountPointResult queryAccountPoint() {
         if (!init) {
             throw new RuntimeException("Init first");
