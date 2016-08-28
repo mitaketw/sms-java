@@ -97,22 +97,16 @@ public class MitakeSms {
         return result;
     }
 
+    public static MitakeSmsQueryMessageStatusResult queryMessageStatus(List<String> messageIds) {
+        return queryMessageStatus(messageIds.toArray(new String[0]));
+    }
+
     public static MitakeSmsQueryMessageStatusResult queryMessageStatus(String... messageIds) {
         if (!init) {
             throw new RuntimeException("Init first");
         }
 
         MitakeSmsQueryMessageStatusResult result = sender.queryMessageStatus(messageIds);
-
-        return result;
-    }
-
-    public static MitakeSmsQueryMessageStatusResult queryMessageStatus(List<String> messageIds) {
-        if (!init) {
-            throw new RuntimeException("Init first");
-        }
-
-        MitakeSmsQueryMessageStatusResult result = sender.queryMessageStatus(messageIds.toArray(new String[0]));
 
         return result;
     }
