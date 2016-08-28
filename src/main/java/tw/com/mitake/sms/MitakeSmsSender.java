@@ -9,6 +9,7 @@ import tw.com.mitake.sms.result.MitakeSmsQueryMessageStatusResult;
 import tw.com.mitake.sms.result.MitakeSmsResult;
 import tw.com.mitake.sms.result.MitakeSmsSendResult;
 
+import java.io.DataOutputStream;
 import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.net.HttpURLConnection;
@@ -16,17 +17,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class MitakeSmsSender {
     public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMddHHmmss");
 
     private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsSender.class);
     private static final String BASE_URL = "http://smexpress.mitake.com.tw";
-    private static final String SEND_URL = BASE_URL + "/SmSendGet.asp";
+    private static final String SEND_SINGLE_BODY_URL = BASE_URL + "/SmSendGet.asp";
+    private static final String SEND_MULTI_BODY_URL = BASE_URL + "/SmSendPost.asp";
     private static final String QUERY_URL = BASE_URL + "/SmQueryGet.asp";
     private static final String KEY_USERNAME = "username";
     private static final String KEY_PASSWORD = "password";
@@ -45,7 +44,7 @@ public class MitakeSmsSender {
         HttpURLConnection conn = null;
 
         try {
-            URL url = buildSendUrl(opts);
+            URL url = buildSendSingleBodyUrl(opts);
 
             conn = (HttpURLConnection) url.openConnection();
 
@@ -66,6 +65,49 @@ public class MitakeSmsSender {
             return connectionError(MitakeSmsSendResult.class, ConnectionResult.EXCEPTION);
         } finally {
             closeConnection(conn);
+        }
+    }
+
+    public MitakeSmsSendResult send(List<SendOptions> optsList) {
+        HttpURLConnection conn = null;
+        DataOutputStream dos = null;
+
+        try {
+            URL url = buildSendMultiBodyUrl();
+
+            conn = (HttpURLConnection) url.openConnection();
+
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+
+            dos = new DataOutputStream(conn.getOutputStream());
+
+            dos.write(transformRequest(optsList));
+            dos.flush();
+
+            int responseCode = conn.getResponseCode();
+
+            if (responseCode != HttpURLConnection.HTTP_OK) {
+                return connectionError(MitakeSmsSendResult.class, ConnectionResult.FAIL);
+            }
+
+            ArrayList<String> response = retrieveResponse(conn);
+
+            return new MitakeSmsSendResult(response, optsList.get(0).getDestinations().get(0));
+        } catch (Exception e) {
+            LOG.error(e.getMessage());
+
+            return connectionError(MitakeSmsSendResult.class, ConnectionResult.EXCEPTION);
+        } finally {
+            closeConnection(conn);
+
+            if (dos != null) {
+                try {
+                    dos.close();
+                } catch (Exception e) {
+                    LOG.error(e.getMessage());
+                }
+            }
         }
     }
 
@@ -125,6 +167,24 @@ public class MitakeSmsSender {
         }
     }
 
+    private byte[] transformRequest(List<SendOptions> optsList) {
+        StringBuffer sb = new StringBuffer();
+
+        for (SendOptions opts : optsList) {
+            for (String destination : opts.getDestinations()) {
+                sb.append("[").append(destination).append("]\n")
+                        .append(KEY_DESTINATION).append("=").append(destination).append("\n")
+                        .append(KEY_MESSAGE).append("=").append(opts.getMessage()).append("\n");
+            }
+        }
+
+        String data = sb.toString();
+
+        LOG.debug("data: {}", data);
+
+        return data.getBytes();
+    }
+
     private ArrayList<String> retrieveResponse(HttpURLConnection conn) throws Exception {
         InputStream is = conn.getInputStream();
 
@@ -161,7 +221,7 @@ public class MitakeSmsSender {
         }
     }
 
-    private URL buildSendUrl(SendOptions opts) throws Exception {
+    private URL buildSendSingleBodyUrl(SendOptions opts) throws Exception {
         HashMap<String, String> map = buildUsernameAndPassword();
 
         map.put(KEY_DESTINATION, StringUtils.join(opts.getDestinations(), ","));
@@ -180,7 +240,15 @@ public class MitakeSmsSender {
             map.put(KEY_EXPIRED_TIME, SDF.format(expiredTime.getTime()));
         }
 
-        return getUrl(SEND_URL, map);
+        return getUrl(SEND_SINGLE_BODY_URL, map);
+    }
+
+    private URL buildSendMultiBodyUrl() throws Exception {
+        HashMap<String, String> map = buildUsernameAndPassword();
+
+        map.put(KEY_ENCODING, UTF8);
+
+        return getUrl(SEND_MULTI_BODY_URL, map);
     }
 
     private URL buildQueryMessageStatusUrl(String... messageIds) throws Exception {
