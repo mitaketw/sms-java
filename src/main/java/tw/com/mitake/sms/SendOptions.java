@@ -2,6 +2,7 @@ package tw.com.mitake.sms;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 
 public class SendOptions {
     private ArrayList<String> destinations = new ArrayList<String>();
@@ -9,14 +10,20 @@ public class SendOptions {
     private Calendar deliveryTime;
     private Calendar expiredTime;
 
-    public SendOptions addDestination(String destination) {
-        destinations.add(destination);
+    public SendOptions addDestination(String... destinations) {
+        Collections.addAll(this.destinations, destinations);
 
         return this;
     }
 
     public ArrayList<String> getDestinations() {
         return destinations;
+    }
+
+    public SendOptions addDestination(ArrayList<String> destinations) {
+        this.destinations.addAll(destinations);
+
+        return this;
     }
 
     public SendOptions setMessage(String message) {

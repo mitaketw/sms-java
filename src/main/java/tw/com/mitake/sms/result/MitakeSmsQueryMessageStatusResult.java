@@ -14,6 +14,10 @@ public class MitakeSmsQueryMessageStatusResult extends MitakeSmsResult {
 
     private ArrayList<QueryMessageStatusResult> results = new ArrayList<QueryMessageStatusResult>();
 
+    public MitakeSmsQueryMessageStatusResult(ConnectionResult connectionResult) {
+        super(connectionResult);
+    }
+
     public MitakeSmsQueryMessageStatusResult(ArrayList<String> response) {
         parseResult(response);
 

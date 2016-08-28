@@ -20,6 +20,10 @@ public class MitakeSmsSendResult extends MitakeSmsResult {
     private ArrayList<SendResult> results = new ArrayList<SendResult>();
     private int accountPoint;
 
+    public MitakeSmsSendResult(ConnectionResult connectionResult) {
+        super(connectionResult);
+    }
+
     public MitakeSmsSendResult(ArrayList<String> response, String to) {
         parseResult(response, to);
 
