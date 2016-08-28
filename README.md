@@ -14,19 +14,19 @@ Mitake SMS library for Java
 <dependency>
   <groupId>tw.com.mitake</groupId>
   <artifactId>lib-sms</artifactId>
-  <version>0.6.0</version>
+  <version>0.7.0</version>
 </dependency>
 ```
 
 ### Gradle
 
 ```groovy
-compile 'tw.com.mitake:lib-sms:0.6.0'
+compile 'tw.com.mitake:lib-sms:0.7.0'
 ```
 
 ## How to use
 
-### Initialize
+### **AT FIRST**
 
 ```java
 MitakeSms.init("username", "password");
@@ -35,7 +35,23 @@ MitakeSms.init("username", "password");
 ### Send a sms
 
 ```java
-MitakeSmsResult result = MitakeSms.send("0912345678", "this is a sample message");
+MitakeSmsSendResult result = MitakeSms.send("0912345678", "this is a sample message");
+```
+
+### Send multi-body sms
+
+```java
+List<SendOptions> optsList = new ArrayList<SendOptions>();
+
+SendOptions opts = new SendOptions().addDestination("0912345678").setMessage("this is a sample message");
+
+optsList.add(opts);
+
+opts = new SendOptions().addDestination("0987654321").setMessage("Hello World");
+
+optsList.add(opts);
+
+MitakeSmsSendResult result = MitakeSms.send(optsList);
 ```
 
 ### Query account point
@@ -53,7 +69,3 @@ MitakeSmsQueryMessageStatusResult result = MitakeSms.queryMessageStatus("message
 
 MitakeSmsQueryMessageStatusResult result = MitakeSms.queryMessageStatus(List<String> messageIds);
 ```
-
-## Official Document
-
-TODO
