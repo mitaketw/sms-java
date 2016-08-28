@@ -5,6 +5,7 @@ import tw.com.mitake.sms.listener.OnPostSendListener;
 import tw.com.mitake.sms.listener.OnPreSendListener;
 import tw.com.mitake.sms.result.MitakeSmsQueryAccountPointResult;
 import tw.com.mitake.sms.result.MitakeSmsQueryMessageStatusResult;
+import tw.com.mitake.sms.result.MitakeSmsResult;
 import tw.com.mitake.sms.result.MitakeSmsSendResult;
 
 import java.util.List;
@@ -60,13 +61,30 @@ public class MitakeSms {
             preListener.onPreSend();
         }
 
-        MitakeSmsSendResult result = sender.send(to, message);
+        SendOptions opts = new SendOptions();
+
+        opts.addDestination(to);
+        opts.setMessage(message);
+
+        MitakeSmsSendResult result = send(opts);
 
         if (postListener != null) {
             postListener.onPostSend();
         }
 
         return result;
+    }
+
+    public static MitakeSmsSendResult send(SendOptions opts) {
+        if (opts.getDestinations().isEmpty()) {
+            return (MitakeSmsSendResult) new MitakeSmsResult(ConnectionResult.FAIL);
+        }
+
+        if (StringUtils.isEmpty(opts.getMessage())) {
+            return (MitakeSmsSendResult) new MitakeSmsResult(ConnectionResult.FAIL);
+        }
+
+        return sender.send(opts);
     }
 
     public static MitakeSmsQueryAccountPointResult queryAccountPoint() {
@@ -79,22 +97,16 @@ public class MitakeSms {
         return result;
     }
 
+    public static MitakeSmsQueryMessageStatusResult queryMessageStatus(List<String> messageIds) {
+        return queryMessageStatus(messageIds.toArray(new String[0]));
+    }
+
     public static MitakeSmsQueryMessageStatusResult queryMessageStatus(String... messageIds) {
         if (!init) {
             throw new RuntimeException("Init first");
         }
 
         MitakeSmsQueryMessageStatusResult result = sender.queryMessageStatus(messageIds);
-
-        return result;
-    }
-
-    public static MitakeSmsQueryMessageStatusResult queryMessageStatus(List<String> messageIds) {
-        if (!init) {
-            throw new RuntimeException("Init first");
-        }
-
-        MitakeSmsQueryMessageStatusResult result = sender.queryMessageStatus(messageIds.toArray(new String[0]));
 
         return result;
     }

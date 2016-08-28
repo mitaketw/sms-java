@@ -11,6 +11,10 @@ public class MitakeSmsQueryAccountPointResult extends MitakeSmsResult {
 
     private int accountPoint;
 
+    public MitakeSmsQueryAccountPointResult(ConnectionResult connectionResult) {
+        super(connectionResult);
+    }
+
     public MitakeSmsQueryAccountPointResult(ArrayList<String> response) {
         parseResult(response);
 
