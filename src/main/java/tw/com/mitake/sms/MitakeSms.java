@@ -23,7 +23,7 @@ public class MitakeSms {
         if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
             init = false;
 
-            throw new IllegalArgumentException("Please press username and password");
+            throw new IllegalArgumentException("Please indicate username and password");
         }
 
         MitakeSms.username = username;
