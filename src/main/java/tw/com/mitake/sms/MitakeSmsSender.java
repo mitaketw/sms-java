@@ -23,7 +23,7 @@ public class MitakeSmsSender {
     public static final SimpleDateFormat SDF = new SimpleDateFormat("yyyyMMddHHmmss");
 
     private static final Logger LOG = LoggerFactory.getLogger(MitakeSmsSender.class);
-    private static final String BASE_URL = "http://smexpress.mitake.com.tw";
+    private static final String BASE_URL = "http://smexpress.mitake.com.tw:9600";
     private static final String SEND_SINGLE_BODY_URL = BASE_URL + "/SmSendGet.asp";
     private static final String SEND_MULTI_BODY_URL = BASE_URL + "/SmSendPost.asp";
     private static final String QUERY_URL = BASE_URL + "/SmQueryGet.asp";
